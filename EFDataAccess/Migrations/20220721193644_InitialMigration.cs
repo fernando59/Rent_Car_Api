@@ -49,6 +49,46 @@ namespace EFDataAccess.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "BrandVehicle",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    name = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BrandVehicle", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ModelVehicle",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    name = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ModelVehicle", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "TypeVehicle",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    name = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false),
+                    pathImage = table.Column<string>(type: "nvarchar(600)", maxLength: 600, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TypeVehicle", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
@@ -154,6 +194,39 @@ namespace EFDataAccess.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.InsertData(
+                table: "AspNetRoles",
+                columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
+                values: new object[,]
+                {
+                    { "832820ac-1b08-444f-a181-cb53552ec970", "a271e1d5-bae6-40d8-a914-72a2b4b15a3f", "Admin", "ADMIN" },
+                    { "ade430d8-7c00-4fb4-96e7-b4531617964e", "8d995af7-4725-433b-a63b-363f37832820", "Client", "CLIENT" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "AspNetUsers",
+                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
+                values: new object[] { "bfd48176-a1c3-4b29-9c74-72b2d8bb688d", 0, "06e14f7f-3043-4d9b-a112-c0044626ad85", "admin@gmail.com", false, false, null, "ADMIN@GMAIL.COM", "ADMIN", "AQAAAAEAACcQAAAAEBeerJmUN4nxV/WimBR05XktNBd3tG6dlggG+zMpBkBwegcvr1b3vCabWzDTBGz89A==", null, false, "8a9109fd-8391-4f09-bcb1-5b6d5edccb1a", false, "admin" });
+
+            migrationBuilder.InsertData(
+                table: "TypeVehicle",
+                columns: new[] { "Id", "name", "pathImage" },
+                values: new object[,]
+                {
+                    { 1, "Motos", null },
+                    { 2, "Autos", null }
+                });
+
+            migrationBuilder.InsertData(
+                table: "AspNetUserClaims",
+                columns: new[] { "Id", "ClaimType", "ClaimValue", "UserId" },
+                values: new object[] { 1, "http://schemas.microsoft.com/ws/2008/06/identity/claims/role", "Admin", "bfd48176-a1c3-4b29-9c74-72b2d8bb688d" });
+
+            migrationBuilder.InsertData(
+                table: "AspNetUserRoles",
+                columns: new[] { "RoleId", "UserId" },
+                values: new object[] { "832820ac-1b08-444f-a181-cb53552ec970", "bfd48176-a1c3-4b29-9c74-72b2d8bb688d" });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -210,6 +283,15 @@ namespace EFDataAccess.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUserTokens");
+
+            migrationBuilder.DropTable(
+                name: "BrandVehicle");
+
+            migrationBuilder.DropTable(
+                name: "ModelVehicle");
+
+            migrationBuilder.DropTable(
+                name: "TypeVehicle");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

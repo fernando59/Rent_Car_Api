@@ -1,11 +1,14 @@
 ﻿using EFDataAccess;
 using EFDataAccess.ClassesAux;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using Rent_Car_Api.DTOs.Auth;
 using System.IdentityModel.Tokens.Jwt;
+using System.Net;
 using System.Security.Claims;
 using System.Text;
 
@@ -47,7 +50,7 @@ namespace Rent_Car_Api.Controllers
 
                 var authClaims = new List<Claim>
                 {
-                    new Claim(ClaimTypes.Email , user.UserName),
+                    new Claim(ClaimTypes.Email , user.Email),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 };
 
@@ -94,10 +97,7 @@ namespace Rent_Car_Api.Controllers
 
 
             //Add Rol Client
-             if (!await _roleManager.RoleExistsAsync(UserRols.Client))
-                    await _roleManager.CreateAsync(new IdentityRole(UserRols.Client));
-
-             if (await _roleManager.RoleExistsAsync(UserRols.Admin))
+             if (await _roleManager.RoleExistsAsync(UserRols.Client))
                     await _userManager.AddToRoleAsync(user, UserRols.Client);
 
 
@@ -106,6 +106,7 @@ namespace Rent_Car_Api.Controllers
         }
         [HttpPost]
         [Route("register-admin")]
+        [Authorize(Roles = UserRols.Admin)]
         public async Task<IActionResult> RegisterAdmin(RegisterDTO model)
         {
             try
@@ -133,13 +134,9 @@ namespace Rent_Car_Api.Controllers
                     return StatusCode(StatusCodes.Status500InternalServerError, new  { Status = "Error", Message = "User creation failed! Please check user details and try again.",ErrorsList=message });
                 }
 
-                if (!await _roleManager.RoleExistsAsync(UserRols.Admin))
-                    await _roleManager.CreateAsync(new IdentityRole(UserRols.Admin));
-               
                 if (await _roleManager.RoleExistsAsync(UserRols.Admin))
-                {
                     await _userManager.AddToRoleAsync(user, UserRols.Admin);
-                }
+                
             
                 return Ok(new { Status = "Success", Message = "User created successfully!" });
             }catch(Exception e)
@@ -151,14 +148,17 @@ namespace Rent_Car_Api.Controllers
 
         private JwtSecurityToken GetToken(List<Claim> authClaims)
         {
-            var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"]));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"]));
+            var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var token = new JwtSecurityToken(
-                issuer: _configuration["JWT:ValidIssuer"],
-                audience: _configuration["JWT:ValidAudience"],
-                expires: DateTime.Now.AddHours(3),
+                //issuer: _configuration["JWT:ValidIssuer"],
+                //audience: _configuration["JWT:ValidAudience"],
+                issuer:null,
+                audience:null,
+                expires: DateTime.Now.AddHours(12),
                 claims: authClaims,
-                signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
+                signingCredentials:credentials
                 );
 
             return token;

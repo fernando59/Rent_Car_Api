@@ -17,8 +17,16 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
-
+var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: MyAllowSpecificOrigins,
+                       builder =>
+                       {
+                           builder.AllowAnyOrigin().AllowAnyHeader()
+                                       .AllowAnyMethod(); ;
+                       });
+});
 // Add services to the container.
 
 // For Entity Framework
@@ -41,8 +49,7 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.Password.RequireLowercase = true;
     options.Password.RequireNonAlphanumeric = true;
     options.Password.RequireUppercase = true;
-    options.Password.RequiredLength = 6;
-    options.Password.RequiredUniqueChars = 1;
+    options.Password.RequiredLength = 8;
 
     // Lockout settings.
     options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
@@ -67,15 +74,16 @@ builder.Services.AddAuthentication(options =>
 // Adding Jwt Bearer
 .AddJwtBearer(options =>
 {
-    options.SaveToken = true;
-    options.RequireHttpsMetadata = false;
+    //options.SaveToken = true;
+    //options.RequireHttpsMetadata = false;
     options.TokenValidationParameters = new TokenValidationParameters()
     {
-        ValidateIssuer = true,
-        ValidateAudience = true,
-        //ValidAudience = configuration["JWT:ValidAudience"],
-        //ValidIssuer = configuration["JWT:ValidIssuer"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:Secret"]))
+        ValidateIssuer = false,
+        ValidateAudience = false,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:Secret"])),
+        ClockSkew = TimeSpan.Zero
     };
 });
 
@@ -91,7 +99,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
+app.UseCors(MyAllowSpecificOrigins);
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
