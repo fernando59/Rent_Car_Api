@@ -69,6 +69,9 @@ namespace Rent_Car_Api.Controllers
             }
             return Unauthorized();
         }
+
+
+
         [HttpPost]
         [Route("register")]
         public async Task<IActionResult> Register(RegisterDTO model)
@@ -104,6 +107,8 @@ namespace Rent_Car_Api.Controllers
 
             return Ok(new  { Status = "Success", Message = "User created successfully!" });
         }
+       
+        
         [HttpPost]
         [Route("register-admin")]
         [Authorize(Roles = UserRols.Admin)]

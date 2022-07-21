@@ -22,6 +22,8 @@
 
   <ItemGroup>
     <Folder Include="Configuration\" />
+    <Folder Include="DTOs\Brand\" />
+    <Folder Include="DTOs\Vehicle\" />
   </ItemGroup>
 
 </Project>

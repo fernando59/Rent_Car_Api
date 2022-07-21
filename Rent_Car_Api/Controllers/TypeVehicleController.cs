@@ -25,7 +25,6 @@ namespace Rent_Car_Api.Controllers
         {
             var typeVehicles = await _context.TypeVehicle.OrderBy(o => o.name).ToListAsync();
             return typeVehicles;
-
         }
 
 
