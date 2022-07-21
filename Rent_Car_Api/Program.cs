@@ -19,12 +19,21 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 
+// Add services to the container.
+
+// For Entity Framework
 builder.Services.AddDbContext<ApplicationDbContext>(option =>
 {
     option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
-//Identity
+// For Identity
+
+builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+    .AddEntityFrameworkStores<ApplicationDbContext>()
+    .AddDefaultTokenProviders();
+
+//Identity Config
 builder.Services.Configure<IdentityOptions>(options =>
 {
     // Password settings.
@@ -45,6 +54,8 @@ builder.Services.Configure<IdentityOptions>(options =>
     "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
     options.User.RequireUniqueEmail = false;
 });
+
+
 // Adding Authentication
 builder.Services.AddAuthentication(options =>
 {
