@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Rent_Car_Api.DTOs.Brand;
+using Rent_Car_Api.Managers;
+using Rent_Car_Api.Managers.Brand;
 
 namespace Rent_Car_Api.Controllers
 {
@@ -14,12 +16,12 @@ namespace Rent_Car_Api.Controllers
     public class BrandVehicleController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
+        private readonly IBrandManager brandManager;
 
-
-        public BrandVehicleController(ApplicationDbContext context)
+        public BrandVehicleController(ApplicationDbContext context, IBrandManager brandManager)
         {
             _context = context;
-
+            this.brandManager = brandManager;
         }
         [HttpGet]
         public async Task<ActionResult<IEnumerable<BrandVehicle>>> GetModelVehicles()
@@ -29,17 +31,35 @@ namespace Rent_Car_Api.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = UserRols.Admin)]
+       // [Authorize(Roles = UserRols.Admin)]
+        
         public async Task<IActionResult> CreateModel(CreateBrandDTO createBrandDTO)
         {
-            var brandFound = await _context.BrandVehicle.Where(item => item.name == createBrandDTO.name).FirstOrDefaultAsync();
-            if (brandFound != null) return BadRequest(new { Message = "There are exist brand" });
+            ManagerResult addResult = await brandManager.AddAsync(createBrandDTO);
 
-            BrandVehicle brandVehicle = new BrandVehicle { name = createBrandDTO.name.ToLower() };
-            await _context.BrandVehicle.AddAsync(brandVehicle);
+            if(!addResult.Success)
+            {
+                return BadRequest(addResult.Message);
+            }
 
-            await _context.SaveChangesAsync();
             return Ok();
         }
+
+
+
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteBrand(int id)
+        {
+            var brand = await _context.BrandVehicle.Where(t => t.Id == id).FirstOrDefaultAsync();
+
+            if (brand == null)  return NotFound(new { Ok = false, Message = "Brand not found" }); 
+
+            _context.BrandVehicle.Remove(brand);
+            await _context.SaveChangesAsync();
+            return Ok(new { Ok = true, Message = "Delete successfully" });
+
+        }
+
     }
 }
