@@ -47,7 +47,7 @@ namespace Rent_Car_Api.Controllers
         public async Task<IActionResult> CreateModel(CreateModelDTO createModelDTO)
         {
             var vehicleFound = await _context.ModelVehicle.Where(item=>item.name ==createModelDTO.name).FirstOrDefaultAsync();
-            if (vehicleFound == null) return BadRequest(new {Message="There are exist model"});
+            if (vehicleFound != null) return BadRequest(new {Message="There are exist model"});
             
             ModelVehicle vehicle = new ModelVehicle { name = createModelDTO.name.ToLower() };
             await _context.ModelVehicle.AddAsync(vehicle);
