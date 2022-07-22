@@ -35,17 +35,28 @@ namespace Rent_Car_Api.Controllers
         
         public async Task<IActionResult> CreateModel(CreateBrandDTO createBrandDTO)
         {
-            ManagerResult addResult = await brandManager.AddAsync(createBrandDTO);
+            ManagerResult managerResult = await brandManager.AddAsync(createBrandDTO);
 
-            if(!addResult.Success)
+            if(!managerResult.Success)
             {
-                return BadRequest(addResult.Message);
+                return BadRequest(managerResult);
             }
 
             return Ok();
         }
 
+        [HttpPut("{id}")]
+        //[Authorize(Roles = UserRols.Admin)]
+        public async Task<IActionResult> UpdateModel(int id, CreateBrandDTO createBrandDTO)
+        {
+            ManagerResult managerResult = await brandManager.Updatesync(id,createBrandDTO);
+            if (!managerResult.Success)
+            {
+                return BadRequest(managerResult);
+            }
 
+            return Ok(managerResult);
+        }
 
 
         [HttpDelete("{id}")]

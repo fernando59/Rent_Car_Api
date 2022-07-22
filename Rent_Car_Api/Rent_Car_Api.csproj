@@ -23,6 +23,8 @@
   <ItemGroup>
     <Folder Include="Configuration\" />
     <Folder Include="DTOs\Vehicle\" />
+    <Folder Include="Managers\Model\" />
+    <Folder Include="Managers\Vehicle\" />
   </ItemGroup>
 
 </Project>

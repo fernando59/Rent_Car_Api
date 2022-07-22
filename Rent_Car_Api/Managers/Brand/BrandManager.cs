@@ -37,5 +37,27 @@ namespace Rent_Car_Api.Managers.Brand
 
             return managerResult;
         }
+
+        public async Task<ManagerResult> Updatesync(int id,CreateBrandDTO createBrandDTO)
+        {
+            var managerResult = new ManagerResult();
+            var brand = await _context.BrandVehicle.FindAsync(id);
+
+            if (brand == null)
+            {
+                managerResult.Success = false;
+                managerResult.Message = "There are not  exist brand";
+                return managerResult;
+
+            }
+
+            brand.name = createBrandDTO.name.ToLower();
+            _context.Entry(brand).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+
+            managerResult.Message = "Successfully Update";
+
+            return managerResult;
+        }
     }
 }

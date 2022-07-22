@@ -6,5 +6,6 @@ namespace Rent_Car_Api.Managers.Brand
     {
 
         Task<ManagerResult> AddAsync(CreateBrandDTO createBrandDTO);
+        Task<ManagerResult> Updatesync(int id,CreateBrandDTO createBrandDTO);
     }
 }

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Rent_Car_Api.DependencyInjection;
 using Rent_Car_Api.Managers.Brand;
 using System.Text;
 
@@ -28,10 +29,10 @@ builder.Services.AddCors(options =>
                                        .AllowAnyMethod(); ;
                        });
 });
-// Add services to the container.
 
-// Register managers
-builder.Services.AddScoped<IBrandManager, BrandManager>();
+// Registers the repositories
+builder.Services.AddRepositories();
+
 
 // For Entity Framework
 builder.Services.AddDbContext<ApplicationDbContext>(option =>
