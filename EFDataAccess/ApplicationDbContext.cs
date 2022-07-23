@@ -15,6 +15,8 @@ namespace EFDataAccess
          public virtual  DbSet<TypeVehicle> TypeVehicle { get; set; }
          public virtual  DbSet<BrandVehicle> BrandVehicle { get; set; }
          public virtual  DbSet<ModelVehicle> ModelVehicle { get; set; }
+         public virtual  DbSet<Vehicle> Vehicle { get; set; }
+         public virtual  DbSet<PhotosVehicle> PhotosVehicles{ get; set; }
 
 
         //Seed Data
@@ -101,7 +103,6 @@ namespace EFDataAccess
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             SeedData(modelBuilder);
-
             base.OnModelCreating(modelBuilder);
         }
 

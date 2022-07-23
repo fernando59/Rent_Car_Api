@@ -58,6 +58,29 @@ namespace EFDataAccess.Migrations
                     b.ToTable("ModelVehicle");
                 });
 
+            modelBuilder.Entity("EFDataAccess.Models.PhotosVehicle", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("VehicleId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("path")
+                        .IsRequired()
+                        .HasMaxLength(600)
+                        .HasColumnType("nvarchar(600)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("VehicleId");
+
+                    b.ToTable("PhotosVehicles");
+                });
+
             modelBuilder.Entity("EFDataAccess.Models.TypeVehicle", b =>
                 {
                     b.Property<int>("Id")
@@ -92,6 +115,54 @@ namespace EFDataAccess.Migrations
                         });
                 });
 
+            modelBuilder.Entity("EFDataAccess.Models.Vehicle", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("BrandVehicleId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ModelVehicleId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TypeVehicleId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("capacity")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("hasAir")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("plate")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
+                    b.Property<decimal>("price")
+                        .HasColumnType("money");
+
+                    b.Property<int>("state")
+                        .HasColumnType("int");
+
+                    b.Property<int>("year")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BrandVehicleId");
+
+                    b.HasIndex("ModelVehicleId");
+
+                    b.HasIndex("TypeVehicleId");
+
+                    b.ToTable("Vehicle");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
@@ -122,14 +193,14 @@ namespace EFDataAccess.Migrations
                         new
                         {
                             Id = "832820ac-1b08-444f-a181-cb53552ec970",
-                            ConcurrencyStamp = "a271e1d5-bae6-40d8-a914-72a2b4b15a3f",
+                            ConcurrencyStamp = "68cf7020-ea91-4c41-beb9-e9399dad2949",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
                             Id = "ade430d8-7c00-4fb4-96e7-b4531617964e",
-                            ConcurrencyStamp = "8d995af7-4725-433b-a63b-363f37832820",
+                            ConcurrencyStamp = "1ee4ba1f-7549-47b0-8493-cc3bc51b2329",
                             Name = "Client",
                             NormalizedName = "CLIENT"
                         });
@@ -229,15 +300,15 @@ namespace EFDataAccess.Migrations
                         {
                             Id = "bfd48176-a1c3-4b29-9c74-72b2d8bb688d",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "06e14f7f-3043-4d9b-a112-c0044626ad85",
+                            ConcurrencyStamp = "3dff01d8-6fb0-4c36-9085-a2969afc42bf",
                             Email = "admin@gmail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@GMAIL.COM",
                             NormalizedUserName = "ADMIN",
-                            PasswordHash = "AQAAAAEAACcQAAAAEBeerJmUN4nxV/WimBR05XktNBd3tG6dlggG+zMpBkBwegcvr1b3vCabWzDTBGz89A==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEMx8gCYgWUs8lNKXcjTfL2CWjknW7JHzlI6ux9FErHlpYxIKXJjbBzkpMH4bemYQfw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "8a9109fd-8391-4f09-bcb1-5b6d5edccb1a",
+                            SecurityStamp = "a60619aa-f76a-4462-8ab9-aee9e94d0398",
                             TwoFactorEnabled = false,
                             UserName = "admin"
                         });
@@ -338,6 +409,44 @@ namespace EFDataAccess.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
+                });
+
+            modelBuilder.Entity("EFDataAccess.Models.PhotosVehicle", b =>
+                {
+                    b.HasOne("EFDataAccess.Models.Vehicle", "Vehicle")
+                        .WithMany()
+                        .HasForeignKey("VehicleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Vehicle");
+                });
+
+            modelBuilder.Entity("EFDataAccess.Models.Vehicle", b =>
+                {
+                    b.HasOne("EFDataAccess.Models.BrandVehicle", "BrandVehicle")
+                        .WithMany()
+                        .HasForeignKey("BrandVehicleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EFDataAccess.Models.ModelVehicle", "ModelVehicle")
+                        .WithMany()
+                        .HasForeignKey("ModelVehicleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EFDataAccess.Models.TypeVehicle", "TypeVehicle")
+                        .WithMany()
+                        .HasForeignKey("TypeVehicleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("BrandVehicle");
+
+                    b.Navigation("ModelVehicle");
+
+                    b.Navigation("TypeVehicle");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

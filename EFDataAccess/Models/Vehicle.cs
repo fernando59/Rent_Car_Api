@@ -1,28 +1,35 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace EFDataAccess.Models
 {
-    internal class Vehicle
+    public class Vehicle
     {
         public int Id { get; set; }
 
 
-        public decimal price{ get; set; }    
+        [Required]
+        [Column(TypeName = "money")]
+        public decimal price{ get; set; }
+
+        public int state { get; set; } = 1;
         public int year{ get; set; }    
-        public int quantity{ get; set; }    
-        public int state { get; set; }    
         public bool hasAir{ get; set; }    
+
+        [StringLength(150)]
+        public string plate{ get; set; }    
         public int capacity{ get; set; }
 
 
-        public BrandVehicle brandId { get; set; }
-        public ModelVehicle modelId { get; set; }
-        public BrandVehicle BrandVehicle { get; set; }
-        public ModelVehicle ModelVehicle { get; set; }
+
+        public virtual BrandVehicle BrandVehicle { get; set; }
+        public virtual ModelVehicle ModelVehicle { get; set; }
+        public virtual TypeVehicle TypeVehicle{ get; set; }
 
 
     }

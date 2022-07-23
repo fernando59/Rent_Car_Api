@@ -50,6 +50,7 @@ namespace Rent_Car_Api.Controllers
         public async Task<IActionResult> UpdateModel(int id, CreateBrandDTO createBrandDTO)
         {
             ManagerResult managerResult = await brandManager.Updatesync(id,createBrandDTO);
+           
             if (!managerResult.Success)
             {
                 return BadRequest(managerResult);

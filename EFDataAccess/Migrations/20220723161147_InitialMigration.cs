@@ -194,19 +194,78 @@ namespace EFDataAccess.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Vehicle",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    price = table.Column<decimal>(type: "money", nullable: false),
+                    state = table.Column<int>(type: "int", nullable: false),
+                    year = table.Column<int>(type: "int", nullable: false),
+                    hasAir = table.Column<bool>(type: "bit", nullable: false),
+                    plate = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
+                    capacity = table.Column<int>(type: "int", nullable: false),
+                    BrandVehicleId = table.Column<int>(type: "int", nullable: false),
+                    ModelVehicleId = table.Column<int>(type: "int", nullable: false),
+                    TypeVehicleId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Vehicle", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Vehicle_BrandVehicle_BrandVehicleId",
+                        column: x => x.BrandVehicleId,
+                        principalTable: "BrandVehicle",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Vehicle_ModelVehicle_ModelVehicleId",
+                        column: x => x.ModelVehicleId,
+                        principalTable: "ModelVehicle",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Vehicle_TypeVehicle_TypeVehicleId",
+                        column: x => x.TypeVehicleId,
+                        principalTable: "TypeVehicle",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PhotosVehicles",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    path = table.Column<string>(type: "nvarchar(600)", maxLength: 600, nullable: false),
+                    VehicleId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PhotosVehicles", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_PhotosVehicles_Vehicle_VehicleId",
+                        column: x => x.VehicleId,
+                        principalTable: "Vehicle",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "832820ac-1b08-444f-a181-cb53552ec970", "a271e1d5-bae6-40d8-a914-72a2b4b15a3f", "Admin", "ADMIN" },
-                    { "ade430d8-7c00-4fb4-96e7-b4531617964e", "8d995af7-4725-433b-a63b-363f37832820", "Client", "CLIENT" }
+                    { "832820ac-1b08-444f-a181-cb53552ec970", "68cf7020-ea91-4c41-beb9-e9399dad2949", "Admin", "ADMIN" },
+                    { "ade430d8-7c00-4fb4-96e7-b4531617964e", "1ee4ba1f-7549-47b0-8493-cc3bc51b2329", "Client", "CLIENT" }
                 });
 
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[] { "bfd48176-a1c3-4b29-9c74-72b2d8bb688d", 0, "06e14f7f-3043-4d9b-a112-c0044626ad85", "admin@gmail.com", false, false, null, "ADMIN@GMAIL.COM", "ADMIN", "AQAAAAEAACcQAAAAEBeerJmUN4nxV/WimBR05XktNBd3tG6dlggG+zMpBkBwegcvr1b3vCabWzDTBGz89A==", null, false, "8a9109fd-8391-4f09-bcb1-5b6d5edccb1a", false, "admin" });
+                values: new object[] { "bfd48176-a1c3-4b29-9c74-72b2d8bb688d", 0, "3dff01d8-6fb0-4c36-9085-a2969afc42bf", "admin@gmail.com", false, false, null, "ADMIN@GMAIL.COM", "ADMIN", "AQAAAAEAACcQAAAAEMx8gCYgWUs8lNKXcjTfL2CWjknW7JHzlI6ux9FErHlpYxIKXJjbBzkpMH4bemYQfw==", null, false, "a60619aa-f76a-4462-8ab9-aee9e94d0398", false, "admin" });
 
             migrationBuilder.InsertData(
                 table: "TypeVehicle",
@@ -265,6 +324,26 @@ namespace EFDataAccess.Migrations
                 column: "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PhotosVehicles_VehicleId",
+                table: "PhotosVehicles",
+                column: "VehicleId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Vehicle_BrandVehicleId",
+                table: "Vehicle",
+                column: "BrandVehicleId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Vehicle_ModelVehicleId",
+                table: "Vehicle",
+                column: "ModelVehicleId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Vehicle_TypeVehicleId",
+                table: "Vehicle",
+                column: "TypeVehicleId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -285,6 +364,18 @@ namespace EFDataAccess.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "PhotosVehicles");
+
+            migrationBuilder.DropTable(
+                name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "Vehicle");
+
+            migrationBuilder.DropTable(
                 name: "BrandVehicle");
 
             migrationBuilder.DropTable(
@@ -292,12 +383,6 @@ namespace EFDataAccess.Migrations
 
             migrationBuilder.DropTable(
                 name: "TypeVehicle");
-
-            migrationBuilder.DropTable(
-                name: "AspNetRoles");
-
-            migrationBuilder.DropTable(
-                name: "AspNetUsers");
         }
     }
 }
