@@ -67,3 +67,5 @@ C:\Users\Fernando Mercado\source\repos\Rent_Car_Api\Rent_Car_Api\bin\Debug\net6.
 C:\Users\Fernando Mercado\source\repos\Rent_Car_Api\Rent_Car_Api\bin\Debug\net6.0\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
 C:\Users\Fernando Mercado\source\repos\Rent_Car_Api\Rent_Car_Api\bin\Debug\net6.0\Microsoft.Extensions.Identity.Core.dll
 C:\Users\Fernando Mercado\source\repos\Rent_Car_Api\Rent_Car_Api\bin\Debug\net6.0\Microsoft.Extensions.Identity.Stores.dll
+C:\Users\Fernando Mercado\source\repos\Rent_Car_Api\Rent_Car_Api\bin\Debug\net6.0\CloudinaryDotNet.dll
+C:\Users\Fernando Mercado\source\repos\Rent_Car_Api\Rent_Car_Api\bin\Debug\net6.0\Newtonsoft.Json.dll
