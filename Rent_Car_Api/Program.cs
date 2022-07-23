@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Rent_Car_Api.DependencyInjection;
-using Rent_Car_Api.Managers.Brand;
+using Rent_Car_Api.Managers.BrandM;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);

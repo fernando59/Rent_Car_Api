@@ -3,7 +3,7 @@ using EFDataAccess.Models;
 using Microsoft.EntityFrameworkCore;
 using Rent_Car_Api.DTOs.Brand;
 
-namespace Rent_Car_Api.Managers.Brand
+namespace Rent_Car_Api.Managers.BrandM
 {
     public class BrandManager : IBrandManager
     {
@@ -14,9 +14,9 @@ namespace Rent_Car_Api.Managers.Brand
             this._context = context;
         }
 
-        public async Task<ManagerResult> AddAsync(CreateBrandDTO createBrandDTO)
+        public async Task<ManagerResult<BrandVehicle>> AddAsync(CreateBrandDTO createBrandDTO)
         {
-            var managerResult = new ManagerResult();
+            var managerResult = new ManagerResult<BrandVehicle>();
 
             // Deberia de estar en repositorio
             var brandFound = await _context.BrandVehicle.Where(item => item.name == createBrandDTO.name).FirstOrDefaultAsync();
@@ -38,9 +38,9 @@ namespace Rent_Car_Api.Managers.Brand
             return managerResult;
         }
 
-        public async Task<ManagerResult> Updatesync(int id,CreateBrandDTO createBrandDTO)
+        public async Task<ManagerResult<BrandVehicle>> Updatesync(int id,CreateBrandDTO createBrandDTO)
         {
-            var managerResult = new ManagerResult();
+            var managerResult = new ManagerResult<BrandVehicle>();
             var brand = await _context.BrandVehicle.FindAsync(id);
 
             if (brand == null)

@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Rent_Car_Api.DTOs.Brand;
 using Rent_Car_Api.Managers;
-using Rent_Car_Api.Managers.Brand;
+using Rent_Car_Api.Managers.BrandM;
 
 namespace Rent_Car_Api.Controllers
 {
@@ -35,7 +35,7 @@ namespace Rent_Car_Api.Controllers
         
         public async Task<IActionResult> CreateModel(CreateBrandDTO createBrandDTO)
         {
-            ManagerResult managerResult = await brandManager.AddAsync(createBrandDTO);
+            ManagerResult<BrandVehicle> managerResult = await brandManager.AddAsync(createBrandDTO);
 
             if(!managerResult.Success)
             {
@@ -49,7 +49,7 @@ namespace Rent_Car_Api.Controllers
         //[Authorize(Roles = UserRols.Admin)]
         public async Task<IActionResult> UpdateModel(int id, CreateBrandDTO createBrandDTO)
         {
-            ManagerResult managerResult = await brandManager.Updatesync(id,createBrandDTO);
+            ManagerResult<BrandVehicle> managerResult = await brandManager.Updatesync(id,createBrandDTO);
            
             if (!managerResult.Success)
             {

@@ -1,6 +1,9 @@
 ﻿using EFDataAccess;
+using EFDataAccess.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Rent_Car_Api.Managers.VehicleM;
 
 namespace Rent_Car_Api.Controllers
 {
@@ -8,13 +11,18 @@ namespace Rent_Car_Api.Controllers
     [ApiController]
     public class VehicleController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IVehicleManager _vehicleManager;
 
-
-        public VehicleController(ApplicationDbContext context)
+        public VehicleController(IVehicleManager vehicleManager)
         {
-            _context = context;
+            _vehicleManager = vehicleManager;
+        }
 
+        [HttpGet]
+        public async Task<ActionResult> GetVehicles()
+        {
+            var vehicles = await _vehicleManager.GetAsync();
+            return Ok(vehicles);
         }
 
 
