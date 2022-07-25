@@ -8,4 +8,6 @@ public interface IVehicleManager
 
     Task<ManagerResult<Vehicle>> AddAsync(CreateVehicleDTO createVehicleDTO);
     Task<ManagerResult<Vehicle>> GetAsync();
+    Task<ManagerResult<Vehicle>> UpdateAsync(int id,UpdateVehicleDTO updateVehicleDTO);
+    Task<ManagerResult<Vehicle>> DeleteAsync(int id);
 }
