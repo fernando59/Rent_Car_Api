@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Rent_Car_Api.DTOs.Model;
+using Rent_Car_Api.Managers.ModelM;
+using Rent_Car_Api.Managers.VehicleM;
 
 namespace Rent_Car_Api.Controllers
 {
@@ -14,19 +16,19 @@ namespace Rent_Car_Api.Controllers
     public class ModelVehicleController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
+        private readonly IModelVehicleManager _modelVehicleManager;
 
-
-        public ModelVehicleController(ApplicationDbContext context)
+        public ModelVehicleController(ApplicationDbContext context,IModelVehicleManager modelVehicleManager)
         {
             _context = context;
-
+            _modelVehicleManager = modelVehicleManager;
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ModelVehicle>>> GetModelVehicles()
+        public async Task<ActionResult> GetModelVehicles()
         {
-            var modelVehicles = await _context.ModelVehicle.ToListAsync();
-            return modelVehicles;
+            var res =await _modelVehicleManager.GetAsync();
+            return Ok(res);
         }
 
 

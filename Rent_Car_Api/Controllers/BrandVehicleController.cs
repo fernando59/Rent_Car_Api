@@ -16,40 +16,40 @@ namespace Rent_Car_Api.Controllers
     public class BrandVehicleController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
-        private readonly IBrandManager brandManager;
+        private readonly IBrandManager _brandManager;
 
         public BrandVehicleController(ApplicationDbContext context, IBrandManager brandManager)
         {
             _context = context;
-            this.brandManager = brandManager;
+            _brandManager = brandManager;
         }
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<BrandVehicle>>> GetModelVehicles()
+        public async Task<ActionResult> GetModelVehicles()
         {
-            var brandVehicles = await _context.BrandVehicle.ToListAsync();
-            return brandVehicles;
+            var brands = await _brandManager.GetAsync();
+            return Ok(brands);
         }
 
         [HttpPost]
        // [Authorize(Roles = UserRols.Admin)]
         
-        public async Task<IActionResult> CreateModel(CreateBrandDTO createBrandDTO)
+        public async Task<IActionResult> CreateBrand(CreateBrandDTO createBrandDTO)
         {
-            ManagerResult<BrandVehicle> managerResult = await brandManager.AddAsync(createBrandDTO);
+            ManagerResult<BrandVehicle> managerResult = await _brandManager.AddAsync(createBrandDTO);
 
             if(!managerResult.Success)
             {
                 return BadRequest(managerResult);
             }
 
-            return Ok();
+            return Ok(managerResult);
         }
 
         [HttpPut("{id}")]
         //[Authorize(Roles = UserRols.Admin)]
-        public async Task<IActionResult> UpdateModel(int id, CreateBrandDTO createBrandDTO)
+        public async Task<IActionResult> UpdateBRand(int id, CreateBrandDTO createBrandDTO)
         {
-            ManagerResult<BrandVehicle> managerResult = await brandManager.Updatesync(id,createBrandDTO);
+            ManagerResult<BrandVehicle> managerResult = await _brandManager.Updatesync(id,createBrandDTO);
            
             if (!managerResult.Success)
             {
@@ -69,7 +69,7 @@ namespace Rent_Car_Api.Controllers
 
             _context.BrandVehicle.Remove(brand);
             await _context.SaveChangesAsync();
-            return Ok(new { Ok = true, Message = "Delete successfully" });
+            return Ok(new { success = true, message = "Delete successfully" });
 
         }
 

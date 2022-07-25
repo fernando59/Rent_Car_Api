@@ -5,6 +5,7 @@ namespace Rent_Car_Api.Managers.BrandM
     public interface IBrandManager
     {
 
+        Task<ManagerResult<BrandVehicle>> GetAsync();
         Task<ManagerResult<BrandVehicle>> AddAsync(CreateBrandDTO createBrandDTO);
         Task<ManagerResult<BrandVehicle>> Updatesync(int id,CreateBrandDTO createBrandDTO);
     }

@@ -3,6 +3,8 @@ using EFDataAccess.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Rent_Car_Api.DTOs.Vehicle;
+using Rent_Car_Api.Managers;
 using Rent_Car_Api.Managers.VehicleM;
 
 namespace Rent_Car_Api.Controllers
@@ -23,6 +25,21 @@ namespace Rent_Car_Api.Controllers
         {
             var vehicles = await _vehicleManager.GetAsync();
             return Ok(vehicles);
+        }
+
+        [HttpPost]
+        // [Authorize(Roles = UserRols.Admin)]
+
+        public async Task<IActionResult> CreateVehicle(CreateVehicleDTO createVehicleDTO)
+        {
+            ManagerResult<Vehicle> managerResult = await _vehicleManager.AddAsync(createVehicleDTO);
+
+            if (!managerResult.Success)
+            {
+                return BadRequest(managerResult);
+            }
+
+            return Ok(managerResult);
         }
 
 

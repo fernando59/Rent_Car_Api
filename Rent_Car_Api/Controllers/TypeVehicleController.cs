@@ -2,7 +2,7 @@
 using EFDataAccess.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using Rent_Car_Api.Managers.TypeVehicleM;
 
 namespace Rent_Car_Api.Controllers
 {
@@ -10,21 +10,19 @@ namespace Rent_Car_Api.Controllers
     [ApiController]
     public class TypeVehicleController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
+        private readonly ITypeVehicleManager _typeVehicleManager;
 
-
-        public TypeVehicleController(ApplicationDbContext context)
+        public TypeVehicleController(ITypeVehicleManager typeVehicleManager)
         {
-            _context = context; 
-
+            _typeVehicleManager = typeVehicleManager;
         }
 
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<TypeVehicle>>> GetTypeVehicles()
         {
-            var typeVehicles = await _context.TypeVehicle.OrderBy(o => o.name).ToListAsync();
-            return typeVehicles;
+            var typeVehicles = await _typeVehicleManager.GetAsync();
+            return Ok(typeVehicles);
         }
 
 

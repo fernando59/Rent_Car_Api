@@ -1,4 +1,6 @@
 ﻿using Rent_Car_Api.Managers.BrandM;
+using Rent_Car_Api.Managers.ModelM;
+using Rent_Car_Api.Managers.TypeVehicleM;
 using Rent_Car_Api.Managers.VehicleM;
 
 namespace Rent_Car_Api.DependencyInjection
@@ -8,6 +10,8 @@ namespace Rent_Car_Api.DependencyInjection
 
         public static IServiceCollection AddRepositories(this IServiceCollection services) =>services
             .AddScoped<IBrandManager, BrandManager>()
+            .AddScoped<IModelVehicleManager,ModelVehicleManager>()
+            .AddScoped<ITypeVehicleManager,TypeVehicleManager>()
             .AddScoped<IVehicleManager,VehicleManager>();
 
 

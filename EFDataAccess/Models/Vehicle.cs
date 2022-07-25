@@ -27,6 +27,9 @@ namespace EFDataAccess.Models
 
 
 
+        public int BrandVehicleId { get; set; }
+        public int ModelVehicleId{ get; set; }
+        public int TypeVehicleId { get; set; }
         public virtual BrandVehicle BrandVehicle { get; set; }
         public virtual ModelVehicle ModelVehicle { get; set; }
         public virtual TypeVehicle TypeVehicle{ get; set; }

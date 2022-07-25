@@ -23,6 +23,7 @@ namespace Rent_Car_Api.Managers.BrandM
 
             if (brandFound != null)
             {
+                managerResult.Success = false;
                 managerResult.Message = "There are exist brand";
                 return managerResult;
             }
@@ -34,7 +35,16 @@ namespace Rent_Car_Api.Managers.BrandM
             await _context.SaveChangesAsync();
 
             managerResult.Success = true;
+            managerResult.Message = "Successfully Add";
 
+            return managerResult;
+        }
+
+        public async Task<ManagerResult<BrandVehicle>> GetAsync()
+        {
+            var managerResult = new ManagerResult<BrandVehicle>();
+            var brands = await _context.BrandVehicle.ToListAsync();
+            managerResult.Data = brands;
             return managerResult;
         }
 

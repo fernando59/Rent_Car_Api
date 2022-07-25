@@ -13,9 +13,38 @@ namespace Rent_Car_Api.Managers.VehicleM
         {
             _context = context;
         }
-        public Task<ManagerResult<Vehicle>> AddAsync(CreateVehicleDTO createVehicleDTO)
+        public async Task<ManagerResult<Vehicle>> AddAsync(CreateVehicleDTO createVehicleDTO)
         {
-            throw new NotImplementedException();
+            var managerResult = new ManagerResult<Vehicle>();
+            try
+            {
+                Vehicle vehicle = new Vehicle
+                {
+                    capacity = createVehicleDTO.capacity,
+                    hasAir = createVehicleDTO.hasAir,
+                    plate = createVehicleDTO.plate.ToUpper(),
+                    price = createVehicleDTO.price,
+                    year = createVehicleDTO.year,
+                    ModelVehicleId = createVehicleDTO.model,
+                    TypeVehicleId = createVehicleDTO.typeVehicle,
+                    BrandVehicleId = createVehicleDTO.brand
+                };
+
+                // Deberia de estar en repositorio
+                await _context.Vehicle.AddAsync(vehicle);
+                await _context.SaveChangesAsync();
+
+                managerResult.Success = true;
+                managerResult.Message = "Successfully Add";
+
+                return managerResult;
+            }
+            catch (Exception e)
+            {
+                managerResult.Success = false;
+                managerResult.Message = e.Message;
+                return managerResult;
+            }
         }
 
         public async Task<ManagerResult<Vehicle>> GetAsync()
@@ -25,6 +54,7 @@ namespace Rent_Car_Api.Managers.VehicleM
               .Include(i => i.ModelVehicle)
               .Include(h => h.BrandVehicle)
               .Include(t => t.TypeVehicle)
+              //.Include(i=>i.)
               .ToListAsync();
 
             managerResult.Data = vehicles;
