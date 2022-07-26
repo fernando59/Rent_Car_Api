@@ -16,8 +16,8 @@ namespace EFDataAccess.Models
         [StringLength(600)]
         public string path { get; set; }
 
-        //public int vehicleId { get; set; }
-        public Vehicle Vehicle { get; set; }
+        public int VehicleId { get; set; }
+        //public Vehicle Vehicle { get; set; }
         //public ICollection<Vehicle> Vehicle { get; set; }
 
 

@@ -27,6 +27,13 @@ namespace Rent_Car_Api.Controllers
             return Ok(vehicles);
         }
 
+        [HttpGet("GetVehiclesFilter")]
+        public async Task<ActionResult> GetVehiclesFilter([FromQuery]int page,int brandId, int typeVehicleId, int modelId, int quantity)
+        {
+            var vehicles =await _vehicleManager.GetAsyncFilter(page,brandId,typeVehicleId,modelId,quantity);
+            return Ok(vehicles);
+        }
+
         [HttpPost]
         // [Authorize(Roles = UserRols.Admin)]
 

@@ -113,12 +113,47 @@ namespace Rent_Car_Api.Managers.VehicleM
               .Include(i => i.ModelVehicle)
               .Include(h => h.BrandVehicle)
               .Include(t => t.TypeVehicle)
-              //.Include(i=>i.)
+              .Include(i=>i.PhotosVehicles)
               .ToListAsync();
 
             managerResult.Data = vehicles;
 
             return managerResult;
+        }
+
+        public async Task<ManagerResult<Vehicle>> GetAsyncFilter(int page,int brandId,int typeVehicleId,int modelId,int quantity=10)
+        {
+            var managerResult = new ManagerResult<Vehicle>();
+            IQueryable<Vehicle> listVehicles = from vehicle in _context.Vehicle
+                                        select vehicle;
+
+            if(brandId != 0) {
+                listVehicles = listVehicles.Where(i => i.BrandVehicleId == brandId);
+            }
+
+            if (typeVehicleId!= 0)
+            {
+                listVehicles = listVehicles.Where(i => i.TypeVehicleId == typeVehicleId);
+            }
+            
+            if (modelId != 0)
+            {
+                listVehicles = listVehicles.Where(i => i.ModelVehicleId == modelId);
+            }
+
+            var vehicles = await listVehicles
+                .Skip(page)
+                .Take(quantity)
+                .Include(s => s.ModelVehicle)
+                .Include(s => s.TypeVehicle)
+                .Include(s => s.BrandVehicle)
+                .ToListAsync();
+
+            managerResult.Data = vehicles;
+
+            return managerResult;
+
+
         }
     }
 }

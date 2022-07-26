@@ -33,6 +33,8 @@ namespace EFDataAccess.Models
         public virtual BrandVehicle BrandVehicle { get; set; }
         public virtual ModelVehicle ModelVehicle { get; set; }
         public virtual TypeVehicle TypeVehicle{ get; set; }
+        
+        public ICollection<PhotosVehicle> PhotosVehicles { get; set; }
 
 
     }
