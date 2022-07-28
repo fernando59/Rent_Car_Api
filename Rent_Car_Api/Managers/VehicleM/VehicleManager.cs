@@ -155,5 +155,30 @@ namespace Rent_Car_Api.Managers.VehicleM
 
 
         }
+
+        public async Task<ManagerResult<Vehicle>> GetAsyncById(int id)
+        {
+            var managerResult = new ManagerResult<Vehicle>();
+            var vehicles = await _context.Vehicle.Where(i=>i.Id ==id)
+              .Include(i => i.ModelVehicle)
+              .Include(h => h.BrandVehicle)
+              .Include(t => t.TypeVehicle)
+              .Include(i=>i.PhotosVehicles)
+              .ToListAsync();
+            if(vehicles.Count == 0)
+            {
+
+                managerResult.Success = false;
+                var vehiclesList= new List<Vehicle>();
+                managerResult.Message = "Vehicle not found";
+                managerResult.Data = vehiclesList;
+                return managerResult;
+            }
+
+            managerResult.Data = vehicles;
+
+            return managerResult;
+
+        }
     }
 }

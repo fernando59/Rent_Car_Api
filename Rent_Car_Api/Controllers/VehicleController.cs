@@ -27,11 +27,29 @@ namespace Rent_Car_Api.Controllers
             return Ok(vehicles);
         }
 
+        [HttpGet("{id}")]
+        public async Task<ActionResult> GetVehicleById(int id)
+        {
+            ManagerResult<Vehicle> managerResult = await _vehicleManager.GetAsyncById(id);
+
+            if (!managerResult.Success)
+            {
+                return NotFound(managerResult);
+            }
+
+            return Ok(managerResult);
+        }
+
         [HttpGet("GetVehiclesFilter")]
         public async Task<ActionResult> GetVehiclesFilter([FromQuery]int page,int brandId, int typeVehicleId, int modelId, int quantity)
         {
-            var vehicles =await _vehicleManager.GetAsyncFilter(page,brandId,typeVehicleId,modelId,quantity);
-            return Ok(vehicles);
+            ManagerResult<Vehicle> managerResult =await _vehicleManager.GetAsyncFilter(page,brandId,typeVehicleId,modelId,quantity);
+            if (!managerResult.Success)
+            {
+                return BadRequest(managerResult);
+            }
+
+            return Ok(managerResult);
         }
 
         [HttpPost]
