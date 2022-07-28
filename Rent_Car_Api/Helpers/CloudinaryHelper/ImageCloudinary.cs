@@ -11,7 +11,7 @@ namespace Rent_Car_Api.Helpers.CloudinaryHelper
         {
             _configuration = configuration;
         }
-        public async Task<bool> uploadImage(IFormFile image)
+        public async Task<string> uploadImage(IFormFile image,string folder)
         {
             try
             {
@@ -24,15 +24,16 @@ namespace Rent_Car_Api.Helpers.CloudinaryHelper
                     File = new FileDescription(image.FileName, image.OpenReadStream()),
                     UseFilename = true,
                     UniqueFilename = false,
+                    Folder=folder,
                     Overwrite = true,
 
                 };
-                var uploadsult = cloudinary.Upload(uploadParams);
-                return true;
+                var uploadResult = cloudinary.Upload(uploadParams);
+                return uploadResult.PublicId;
             }
             catch (Exception e)
             {
-                return false;
+                return "";
             }
         }
     }

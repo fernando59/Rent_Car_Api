@@ -20,6 +20,12 @@ namespace Rent_Car_Api.Controllers
         {
             _photoManager = photoManager;
         }
+        [HttpGet("{id}")]
+        public async Task<ActionResult> GetPhotosByVehicle(int id)
+        {
+            var res = await _photoManager.GetAsync(id);
+            return Ok(res);
+        }
 
         [HttpPost]
         public async Task<IActionResult> UploadImage([FromForm] CreateImageDTO createImageDTO)

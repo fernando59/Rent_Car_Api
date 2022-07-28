@@ -1,8 +1,10 @@
-﻿namespace Rent_Car_Api.Helpers.CloudinaryHelper
+﻿using EFDataAccess.Models;
+using Rent_Car_Api.Managers;
+
+namespace Rent_Car_Api.Helpers.CloudinaryHelper
 {
     public interface IImageCloudinary
     {
-
-       Task<bool>  uploadImage(IFormFile image);
+        Task<string>  uploadImage(IFormFile image,string folder);
     }
 }
