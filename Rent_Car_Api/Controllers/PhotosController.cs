@@ -1,7 +1,11 @@
 ﻿using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
+using EFDataAccess.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Rent_Car_Api.DTOs.Image;
+using Rent_Car_Api.Managers;
+using Rent_Car_Api.Managers.PhotoM;
 
 namespace Rent_Car_Api.Controllers
 {
@@ -10,22 +14,25 @@ namespace Rent_Car_Api.Controllers
     public class PhotosController : ControllerBase
     {
 
-        [HttpPost]
         // [Authorize(Roles = UserRols.Admin)]
-
-        public async Task<IActionResult> UploadImage()
+        private readonly IPhotoManager _photoManager;
+        public PhotosController(IPhotoManager photoManager)
         {
-            Cloudinary cloudinary = new Cloudinary(Environment.GetEnvironmentVariable("CLOUDINARY_URL"));
-            var uploadParams = new ImageUploadParams()
-            {
-                File = new FileDescription(@"https://cloudinary-devs.github.io/cld-docs-assets/assets/images/cld-sample.jpg"),
-                UseFilename = true,
-                UniqueFilename = false,
-                Overwrite = true
-            };
-            var uploadResult = cloudinary.Upload(uploadParams);
+            _photoManager = photoManager;
+        }
 
-            return Ok();
+        [HttpPost]
+        public async Task<IActionResult> UploadImage([FromForm] CreateImageDTO createImageDTO)
+        {
+
+            ManagerResult<PhotosVehicle> managerResult = await _photoManager.AddAsync(createImageDTO);
+
+            if (!managerResult.Success)
+            {
+                return BadRequest(managerResult);
+            }
+
+            return Ok(managerResult);
         }
 
     }
