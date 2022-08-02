@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EFDataAccess.ClassesAux;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -17,7 +18,7 @@ namespace EFDataAccess.Models
         [Column(TypeName = "money")]
         public decimal price{ get; set; }
 
-        public int state { get; set; } = 1;
+        public int state { get; set; } = VehicleStates.Open;
         public int year{ get; set; }    
         public bool hasAir{ get; set; }    
 

@@ -17,6 +17,7 @@ namespace EFDataAccess
          public virtual  DbSet<ModelVehicle> ModelVehicle { get; set; }
          public virtual  DbSet<Vehicle> Vehicle { get; set; }
          public virtual  DbSet<PhotosVehicle> PhotosVehicles{ get; set; }
+         public virtual  DbSet<OrderReservation> OrderReservation{ get; set; }
 
 
         //Seed Data

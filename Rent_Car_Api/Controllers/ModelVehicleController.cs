@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Rent_Car_Api.DTOs.Model;
+using Rent_Car_Api.Managers;
 using Rent_Car_Api.Managers.ModelM;
 using Rent_Car_Api.Managers.VehicleM;
 
@@ -45,34 +46,47 @@ namespace Rent_Car_Api.Controllers
 
 
         [HttpPost]
-        [Authorize(Roles = UserRols.Admin)]
+
+        //[Authorize(Roles = UserRols.Admin)]
         public async Task<IActionResult> CreateModel(CreateModelDTO createModelDTO)
         {
-            var vehicleFound = await _context.ModelVehicle.Where(item=>item.name ==createModelDTO.name).FirstOrDefaultAsync();
-            if (vehicleFound != null) return BadRequest(new {Message="There are exist model"});
-            
-            ModelVehicle vehicle = new ModelVehicle { name = createModelDTO.name.ToLower() };
-            await _context.ModelVehicle.AddAsync(vehicle);
-        
-            await _context.SaveChangesAsync();
-            return Ok();
+            ManagerResult<ModelVehicle> managerResult = await _modelVehicleManager.AddAsync(createModelDTO);
+
+            if (!managerResult.Success)
+            {
+                return BadRequest(managerResult);
+            }
+
+            return Ok(managerResult);
         }
+
 
         [HttpPut("{id}")]
-        [Authorize(Roles = UserRols.Admin)]
+        //[Authorize(Roles = UserRols.Admin)]
         public async Task<IActionResult> UpdateModel(int id,CreateModelDTO createModelDTO)
         {
-            var vehicle = await _context.ModelVehicle.FindAsync(id);
+            ManagerResult<ModelVehicle> managerResult = await _modelVehicleManager.UpdateAsync(id, createModelDTO);
 
-            if (vehicle == null) return NotFound();
+            if (!managerResult.Success)
+            {
+                return BadRequest(managerResult);
+            }
 
-            vehicle.name = createModelDTO.name.ToLower();
-            _context.Entry(vehicle).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
-
-            return Ok();
+            return Ok(managerResult);
         }
 
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteModel(int id)
+        {
+            ManagerResult<ModelVehicle> managerResult = await _modelVehicleManager.DeleteAsync(id);
+
+            if (!managerResult.Success)
+            {
+                return BadRequest(managerResult);
+            }
+            return Ok(managerResult);
+
+        }
 
 
     }

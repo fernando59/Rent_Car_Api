@@ -65,7 +65,7 @@ namespace Rent_Car_Api.Controllers
         {
             var brand = await _context.BrandVehicle.Where(t => t.Id == id).FirstOrDefaultAsync();
 
-            if (brand == null)  return NotFound(new { Ok = false, Message = "Brand not found" }); 
+            if (brand == null)  return NotFound(new { success = false, Message = "Brand not found" }); 
 
             _context.BrandVehicle.Remove(brand);
             await _context.SaveChangesAsync();

@@ -58,6 +58,42 @@ namespace EFDataAccess.Migrations
                     b.ToTable("ModelVehicle");
                 });
 
+            modelBuilder.Entity("EFDataAccess.Models.OrderReservation", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("VehicleId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("createAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("days")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("price")
+                        .HasColumnType("money");
+
+                    b.Property<int>("status")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.HasIndex("VehicleId");
+
+                    b.ToTable("OrderReservation");
+                });
+
             modelBuilder.Entity("EFDataAccess.Models.PhotosVehicle", b =>
                 {
                     b.Property<int>("Id")
@@ -193,14 +229,14 @@ namespace EFDataAccess.Migrations
                         new
                         {
                             Id = "832820ac-1b08-444f-a181-cb53552ec970",
-                            ConcurrencyStamp = "68cf7020-ea91-4c41-beb9-e9399dad2949",
+                            ConcurrencyStamp = "4950b87f-981b-4380-8c68-df04ce78a183",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
                             Id = "ade430d8-7c00-4fb4-96e7-b4531617964e",
-                            ConcurrencyStamp = "1ee4ba1f-7549-47b0-8493-cc3bc51b2329",
+                            ConcurrencyStamp = "1f2360eb-851a-4f32-974b-99fc88248ecc",
                             Name = "Client",
                             NormalizedName = "CLIENT"
                         });
@@ -300,15 +336,15 @@ namespace EFDataAccess.Migrations
                         {
                             Id = "bfd48176-a1c3-4b29-9c74-72b2d8bb688d",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "3dff01d8-6fb0-4c36-9085-a2969afc42bf",
+                            ConcurrencyStamp = "ce9650ef-0f59-4765-bb39-df1f356cdc7f",
                             Email = "admin@gmail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@GMAIL.COM",
                             NormalizedUserName = "ADMIN",
-                            PasswordHash = "AQAAAAEAACcQAAAAEMx8gCYgWUs8lNKXcjTfL2CWjknW7JHzlI6ux9FErHlpYxIKXJjbBzkpMH4bemYQfw==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEKuny19FN7XZiOB9dG6BGCHJcH//8poDcu/Wgae6Na9nnY8t/TVYGtM3Uwa0G7xVFA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "a60619aa-f76a-4462-8ab9-aee9e94d0398",
+                            SecurityStamp = "b87d883f-2c34-4332-b5f5-7a2caa1aa1f4",
                             TwoFactorEnabled = false,
                             UserName = "admin"
                         });
@@ -411,15 +447,32 @@ namespace EFDataAccess.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("EFDataAccess.Models.PhotosVehicle", b =>
+            modelBuilder.Entity("EFDataAccess.Models.OrderReservation", b =>
                 {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("EFDataAccess.Models.Vehicle", "Vehicle")
                         .WithMany()
                         .HasForeignKey("VehicleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("User");
+
                     b.Navigation("Vehicle");
+                });
+
+            modelBuilder.Entity("EFDataAccess.Models.PhotosVehicle", b =>
+                {
+                    b.HasOne("EFDataAccess.Models.Vehicle", null)
+                        .WithMany("PhotosVehicles")
+                        .HasForeignKey("VehicleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("EFDataAccess.Models.Vehicle", b =>
@@ -498,6 +551,11 @@ namespace EFDataAccess.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("EFDataAccess.Models.Vehicle", b =>
+                {
+                    b.Navigation("PhotosVehicles");
                 });
 #pragma warning restore 612, 618
         }

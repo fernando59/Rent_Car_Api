@@ -52,6 +52,7 @@ namespace Rent_Car_Api.Controllers
                 {
                     new Claim(ClaimTypes.Email , user.Email),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                    new Claim("uid",user.Id),
                 };
 
                 foreach (var userRole in UserRols)

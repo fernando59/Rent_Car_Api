@@ -2,6 +2,7 @@
 using Rent_Car_Api.DTOs.Vehicle;
 using EFDataAccess.Models;
 using Microsoft.EntityFrameworkCore;
+using EFDataAccess.ClassesAux;
 
 namespace Rent_Car_Api.Managers.VehicleM
 {
@@ -109,7 +110,7 @@ namespace Rent_Car_Api.Managers.VehicleM
         public async Task<ManagerResult<Vehicle>> GetAsync()
         {
             var managerResult = new ManagerResult<Vehicle>();
-            var vehicles = await _context.Vehicle
+            var vehicles = await _context.Vehicle.Where(i=>i.state ==VehicleStates.Open)
               .Include(i => i.ModelVehicle)
               .Include(h => h.BrandVehicle)
               .Include(t => t.TypeVehicle)
@@ -179,6 +180,19 @@ namespace Rent_Car_Api.Managers.VehicleM
 
             return managerResult;
 
+        }
+
+        public async Task<ManagerResult<decimal>> GetPrices()
+        {
+            var managerResult = new ManagerResult<decimal>();
+            var max = await _context.Vehicle.MaxAsync(x => x.price);
+            var min = await _context.Vehicle.MinAsync(x => x.price);
+
+            decimal[] prices = { min, max };
+
+            managerResult.Data = prices;
+
+            return managerResult;
         }
     }
 }

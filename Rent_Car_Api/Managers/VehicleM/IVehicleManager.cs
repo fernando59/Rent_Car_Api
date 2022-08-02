@@ -8,6 +8,7 @@ public interface IVehicleManager
 
     Task<ManagerResult<Vehicle>> AddAsync(CreateVehicleDTO createVehicleDTO);
     Task<ManagerResult<Vehicle>> GetAsync();
+    Task<ManagerResult<decimal>> GetPrices();
     Task<ManagerResult<Vehicle>> GetAsyncById(int id);
     Task<ManagerResult<Vehicle>> GetAsyncFilter(int page,int brandId, int typeVehicleId, int modelId, int quantity);
     Task<ManagerResult<Vehicle>> UpdateAsync(int id,UpdateVehicleDTO updateVehicleDTO);

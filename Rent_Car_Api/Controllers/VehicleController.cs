@@ -39,6 +39,18 @@ namespace Rent_Car_Api.Controllers
 
             return Ok(managerResult);
         }
+        [HttpGet("getPricesRange")]
+        public async Task<ActionResult> GetPricesRange()
+        {
+            ManagerResult<decimal> managerResult = await _vehicleManager.GetPrices();
+
+            if (!managerResult.Success)
+            {
+                return NotFound(managerResult);
+            }
+
+            return Ok(managerResult);
+        }
 
         [HttpGet("GetVehiclesFilter")]
         public async Task<ActionResult> GetVehiclesFilter([FromQuery]int page,int brandId, int typeVehicleId, int modelId, int quantity)
