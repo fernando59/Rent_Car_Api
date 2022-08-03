@@ -19,12 +19,19 @@ namespace Rent_Car_Api.Controllers
             _orderManager = orderManager;
         }
 
+        [HttpGet]
+        public async Task<ActionResult> GetOrders()
+        {
+            var orders = await _orderManager.GetAsync();
+            return Ok(orders);
+        }
+
         [HttpPost]
         //[Authorize(Roles = UserRols.Admin)]
         public async Task<IActionResult> CreateOrder(CreateOrderDTO createrOrderDTO)
         {
-            createrOrderDTO.userId = getUser();
-            ManagerResult<OrderReservation> managerResult = await _orderManager.AddAsync(createrOrderDTO);
+            string userId = getUser();
+            ManagerResult<OrderReservation> managerResult = await _orderManager.AddAsync(createrOrderDTO,userId);
 
             if (!managerResult.Success)
             {

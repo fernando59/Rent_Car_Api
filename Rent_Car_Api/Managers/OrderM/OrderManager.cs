@@ -14,8 +14,20 @@ namespace Rent_Car_Api.Managers.OrderM
         {
             _context = context;
         }
+        public async Task<ManagerResult<OrderReservation>> GetAsync()
+        {
 
-        public async Task<ManagerResult<OrderReservation>> AddAsync(CreateOrderDTO createOrderDTO)
+            var managerResult = new ManagerResult<OrderReservation>();
+            var orders = await _context.OrderReservation.Where(i => i.status == 1)
+                .Include(i=>i.Vehicle)
+                .Include(i=>i.User)
+                .ToListAsync();
+            managerResult.Data = orders;
+            return managerResult;
+        }
+
+
+        public async Task<ManagerResult<OrderReservation>> AddAsync(CreateOrderDTO createOrderDTO, string userId)
         {
             var transaction = _context.Database.BeginTransaction();
             var managerResult = new ManagerResult<OrderReservation>();
@@ -45,7 +57,7 @@ namespace Rent_Car_Api.Managers.OrderM
                     days = createOrderDTO.days,
                     price = createOrderDTO.price,
                     VehicleId = createOrderDTO.VehicleId,
-                    UserId = createOrderDTO.userId,
+                    UserId = userId,
                 };
 
                 // Deberia de estar en repositorio
@@ -59,16 +71,17 @@ namespace Rent_Car_Api.Managers.OrderM
 
                 return managerResult;
             }
-                catch(Exception e)
+            catch (Exception e)
             {
 
-                await transaction.RollbackAsync();    
-                managerResult.Success=false;
+                await transaction.RollbackAsync();
+                managerResult.Success = false;
                 return managerResult;
 
             }
 
         }
+
 
         private async Task<bool> UpdateVehicle(Vehicle vehicle)
         {
@@ -79,7 +92,8 @@ namespace Rent_Car_Api.Managers.OrderM
                 _context.Entry(vehicle).State = EntityState.Modified;
                 await _context.SaveChangesAsync();
                 return true;
-            }catch(Exception e)
+            }
+            catch (Exception e)
             {
 
                 return false;

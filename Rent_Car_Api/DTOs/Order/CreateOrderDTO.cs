@@ -5,7 +5,6 @@
         public int days { get; set; }
         public decimal price { get; set; }
         public int VehicleId { get; set; }
-        public string? userId{ get; set; }
 
     }
 }
