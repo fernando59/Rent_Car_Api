@@ -16,31 +16,19 @@ namespace Rent_Car_Api.Controllers
     [ApiController]
     public class ModelVehicleController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
         private readonly IModelVehicleManager _modelVehicleManager;
 
-        public ModelVehicleController(ApplicationDbContext context,IModelVehicleManager modelVehicleManager)
+        public ModelVehicleController(IModelVehicleManager modelVehicleManager)
         {
-            _context = context;
             _modelVehicleManager = modelVehicleManager;
         }
+
 
         [HttpGet]
         public async Task<ActionResult> GetModelVehicles()
         {
             var res =await _modelVehicleManager.GetAsync();
             return Ok(res);
-        }
-
-
-
-        [HttpGet("{id}")]
-        public async Task<ActionResult<ModelVehicle>> GetModel(int id)
-        {
-            var vehicle = await _context.ModelVehicle.FindAsync(id);
-            if (vehicle != null) return vehicle;
-            return NotFound();
-
         }
 
 
@@ -76,6 +64,7 @@ namespace Rent_Car_Api.Controllers
         }
 
         [HttpDelete("{id}")]
+        //[Authorize(Roles = UserRols.Admin)]
         public async Task<IActionResult> DeleteModel(int id)
         {
             ManagerResult<ModelVehicle> managerResult = await _modelVehicleManager.DeleteAsync(id);

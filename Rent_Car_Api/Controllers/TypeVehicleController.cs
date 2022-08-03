@@ -2,6 +2,8 @@
 using EFDataAccess.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Rent_Car_Api.DTOs.TypeVehicle;
+using Rent_Car_Api.Managers;
 using Rent_Car_Api.Managers.TypeVehicleM;
 
 namespace Rent_Car_Api.Controllers
@@ -23,6 +25,48 @@ namespace Rent_Car_Api.Controllers
         {
             var typeVehicles = await _typeVehicleManager.GetAsync();
             return Ok(typeVehicles);
+        }
+        [HttpPost]
+
+        //[Authorize(Roles = UserRols.Admin)]
+        public async Task<IActionResult> CreateTypeVehicle(CreateTypeVehicleDTO createTypeVehicleDTO)
+        {
+            ManagerResult<TypeVehicle> managerResult = await _typeVehicleManager.AddAsync(createTypeVehicleDTO);
+
+            if (!managerResult.Success)
+            {
+                return BadRequest(managerResult);
+            }
+
+            return Ok(managerResult);
+        }
+
+        [HttpPut("{id}")]
+        //[Authorize(Roles = UserRols.Admin)]
+        public async Task<IActionResult> UpdateTypeVehicle(int id, CreateTypeVehicleDTO createTypeVehicleDTO)
+        {
+            ManagerResult<TypeVehicle> managerResult = await _typeVehicleManager.UpdateAsync(id, createTypeVehicleDTO);
+
+            if (!managerResult.Success)
+            {
+                return BadRequest(managerResult);
+            }
+
+            return Ok(managerResult);
+        }
+
+        [HttpDelete("{id}")]
+        //[Authorize(Roles = UserRols.Admin)]
+        public async Task<IActionResult> DeleteTypeVehicle(int id)
+        {
+            ManagerResult<TypeVehicle> managerResult = await _typeVehicleManager.DeleteAsync(id);
+
+            if (!managerResult.Success)
+            {
+                return BadRequest(managerResult);
+            }
+            return Ok(managerResult);
+
         }
 
 
