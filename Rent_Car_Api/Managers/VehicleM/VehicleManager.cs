@@ -14,6 +14,20 @@ namespace Rent_Car_Api.Managers.VehicleM
         {
             _context = context;
         }
+        public async Task<ManagerResult<Vehicle>> GetAsync()
+        {
+            var managerResult = new ManagerResult<Vehicle>();
+            var vehicles = await _context.Vehicle.Where(i => i.state != VehicleStates.Deleted)
+              .Include(i => i.ModelVehicle)
+              .Include(h => h.BrandVehicle)
+              .Include(t => t.TypeVehicle)
+              .Include(i => i.PhotosVehicles)
+              .ToListAsync();
+
+            managerResult.Data = vehicles;
+
+            return managerResult;
+        }
         public async Task<ManagerResult<Vehicle>> AddAsync(CreateVehicleDTO createVehicleDTO)
         {
             var managerResult = new ManagerResult<Vehicle>();
@@ -26,9 +40,9 @@ namespace Rent_Car_Api.Managers.VehicleM
                     plate = createVehicleDTO.plate.ToUpper(),
                     price = createVehicleDTO.price,
                     year = createVehicleDTO.year,
-                    ModelVehicleId = createVehicleDTO.modelVehicle,
-                    TypeVehicleId = createVehicleDTO.typeVehicle,
-                    BrandVehicleId = createVehicleDTO.brandVehicle
+                    ModelVehicleId = createVehicleDTO.modelVehicleId,
+                    TypeVehicleId = createVehicleDTO.typeVehicleId,
+                    BrandVehicleId = createVehicleDTO.brandVehicleId
                 };
 
                 // Deberia de estar en repositorio
@@ -107,20 +121,7 @@ namespace Rent_Car_Api.Managers.VehicleM
                 return managerResult;
             }
         }
-        public async Task<ManagerResult<Vehicle>> GetAsync()
-        {
-            var managerResult = new ManagerResult<Vehicle>();
-            var vehicles = await _context.Vehicle.Where(i=>i.state ==VehicleStates.Open)
-              .Include(i => i.ModelVehicle)
-              .Include(h => h.BrandVehicle)
-              .Include(t => t.TypeVehicle)
-              .Include(i=>i.PhotosVehicles)
-              .ToListAsync();
 
-            managerResult.Data = vehicles;
-
-            return managerResult;
-        }
 
         public async Task<ManagerResult<Vehicle>> GetAsyncFilter(int page,int brandId,int typeVehicleId,int modelId,int quantity=10)
         {
