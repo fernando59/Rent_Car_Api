@@ -79,8 +79,14 @@ namespace EFDataAccess.Migrations
                     b.Property<int>("days")
                         .HasColumnType("int");
 
+                    b.Property<DateTime>("endDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<decimal>("price")
                         .HasColumnType("money");
+
+                    b.Property<DateTime>("startDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("status")
                         .HasColumnType("int");
@@ -171,6 +177,9 @@ namespace EFDataAccess.Migrations
                     b.Property<int>("capacity")
                         .HasColumnType("int");
 
+                    b.Property<string>("description")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("hasAir")
                         .HasColumnType("bit");
 
@@ -229,14 +238,14 @@ namespace EFDataAccess.Migrations
                         new
                         {
                             Id = "832820ac-1b08-444f-a181-cb53552ec970",
-                            ConcurrencyStamp = "4950b87f-981b-4380-8c68-df04ce78a183",
+                            ConcurrencyStamp = "f94cec06-812c-4f67-85d7-69fb7b8c127d",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
                             Id = "ade430d8-7c00-4fb4-96e7-b4531617964e",
-                            ConcurrencyStamp = "1f2360eb-851a-4f32-974b-99fc88248ecc",
+                            ConcurrencyStamp = "42f3e8d6-a6df-4e71-9657-7d40104dcc12",
                             Name = "Client",
                             NormalizedName = "CLIENT"
                         });
@@ -336,15 +345,15 @@ namespace EFDataAccess.Migrations
                         {
                             Id = "bfd48176-a1c3-4b29-9c74-72b2d8bb688d",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "ce9650ef-0f59-4765-bb39-df1f356cdc7f",
+                            ConcurrencyStamp = "02f6d041-25ac-4c79-a218-584127e1c5f0",
                             Email = "admin@gmail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@GMAIL.COM",
                             NormalizedUserName = "ADMIN",
-                            PasswordHash = "AQAAAAEAACcQAAAAEKuny19FN7XZiOB9dG6BGCHJcH//8poDcu/Wgae6Na9nnY8t/TVYGtM3Uwa0G7xVFA==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEJZacbbuNzF4atq6heT57VTmtJaNpFUO32K3rgIJ9M5n2+79hlcfXIOICQ9r4xPY2Q==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "b87d883f-2c34-4332-b5f5-7a2caa1aa1f4",
+                            SecurityStamp = "e72973ff-3e99-4c6c-a450-acd04efade49",
                             TwoFactorEnabled = false,
                             UserName = "admin"
                         });

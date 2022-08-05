@@ -6,6 +6,8 @@ namespace Rent_Car_Api.Managers.OrderM
     public interface IOrderManager
     {
         Task<ManagerResult<OrderReservation>> GetAsync();
-        Task<ManagerResult<OrderReservation>> AddAsync(CreateOrderDTO createOrderDTO,string userId);
+        Task<ManagerResult<OrderReservation>> GetByClientAsync(string userId);
+        Task<ManagerResult<OrderReservation>> AddAsync(CreateOrderDTO createOrderDTO, string userId);
+        Task<ManagerResult<OrderReservation>> UpdateAsync(int id,UpdateOrderDTO updateOrderDTO,string userId);
     }
 }

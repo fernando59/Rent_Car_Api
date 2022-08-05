@@ -123,10 +123,10 @@ namespace Rent_Car_Api.Managers.VehicleM
         }
 
 
-        public async Task<ManagerResult<Vehicle>> GetAsyncFilter(int page,int brandId,int typeVehicleId,int modelId,int quantity=10)
+        public async Task<ManagerResult<Vehicle>> GetAsyncFilter(int page,int brandId=0,int typeVehicleId=0,int modelId = 0,int quantity=10)
         {
             var managerResult = new ManagerResult<Vehicle>();
-            IQueryable<Vehicle> listVehicles = from vehicle in _context.Vehicle
+            IQueryable<Vehicle> listVehicles = from vehicle in _context.Vehicle where vehicle.state == VehicleStates.Open
                                         select vehicle;
 
             if(brandId != 0) {

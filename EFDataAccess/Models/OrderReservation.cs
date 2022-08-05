@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using EFDataAccess.ClassesAux;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -13,12 +14,16 @@ namespace EFDataAccess.Models
         public int Id { get; set; }
 
         public DateTime createAt{ get; set; } = DateTime.Now;
+
+        public DateTime startDate{ get; set; } = DateTime.Now;
+        public DateTime endDate{ get; set; } = DateTime.Now;
+
         public int days { get;set; }
 
         [Column(TypeName = "money")]
         public decimal price { get; set; }
 
-        public int status { get; set; } = 1;
+        public int status { get; set; } = OrderStates.Pending;
 
         
 

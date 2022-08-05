@@ -31,7 +31,7 @@ namespace Rent_Car_Api.Controllers
         }
 
         [HttpPost]
-       // [Authorize(Roles = UserRols.Admin)]
+        [Authorize(Roles = UserRols.Admin)]
         
         public async Task<IActionResult> CreateBrand(CreateBrandDTO createBrandDTO)
         {
@@ -46,7 +46,7 @@ namespace Rent_Car_Api.Controllers
         }
 
         [HttpPut("{id}")]
-        //[Authorize(Roles = UserRols.Admin)]
+        [Authorize(Roles = UserRols.Admin)]
         public async Task<IActionResult> UpdateBRand(int id, CreateBrandDTO createBrandDTO)
         {
             ManagerResult<BrandVehicle> managerResult = await _brandManager.Updatesync(id,createBrandDTO);

@@ -18,8 +18,11 @@ namespace Rent_Car_Api.Managers.OrderM
         {
 
             var managerResult = new ManagerResult<OrderReservation>();
-            var orders = await _context.OrderReservation.Where(i => i.status == 1)
+            var orders = await _context.OrderReservation.Where(i => i.status != 4)
                 .Include(i=>i.Vehicle)
+                .Include("Vehicle.BrandVehicle")
+                .Include("Vehicle.ModelVehicle")
+                .Include("Vehicle.TypeVehicle")
                 .Include(i=>i.User)
                 .ToListAsync();
             managerResult.Data = orders;
@@ -51,13 +54,15 @@ namespace Rent_Car_Api.Managers.OrderM
                 }
 
 
-
+                var days = (createOrderDTO.endDate.Date - createOrderDTO.startDate.Date).Days;
                 OrderReservation orderReservation = new OrderReservation
                 {
-                    days = createOrderDTO.days,
-                    price = createOrderDTO.price,
+                    startDate = createOrderDTO.startDate,
+                    endDate = createOrderDTO.endDate,
+                    price = vehicle.price,
                     VehicleId = createOrderDTO.VehicleId,
                     UserId = userId,
+                    days=days,
                 };
 
                 // Deberia de estar en repositorio
@@ -76,6 +81,7 @@ namespace Rent_Car_Api.Managers.OrderM
 
                 await transaction.RollbackAsync();
                 managerResult.Success = false;
+                managerResult.Message = e.Message;
                 return managerResult;
 
             }
@@ -100,5 +106,91 @@ namespace Rent_Car_Api.Managers.OrderM
             }
         }
 
+        public async Task<ManagerResult<OrderReservation>> GetByClientAsync(string userId)
+        {
+            var managerResult = new ManagerResult<OrderReservation>();
+            var orders = await _context.OrderReservation
+                .Where(i => i.status != 4)
+                .Where(i=>i.UserId ==userId)
+                .Include(i => i.Vehicle)
+                .Include("Vehicle.BrandVehicle")
+                .Include("Vehicle.ModelVehicle")
+                .Include("Vehicle.TypeVehicle")
+                .Include(i => i.User)
+                .ToListAsync();
+            managerResult.Data = orders;
+            return managerResult;
+        }
+
+        public async Task<ManagerResult<OrderReservation>> UpdateAsync(int id,UpdateOrderDTO updateOrderDTO, string userId)
+        {
+
+            var transaction = _context.Database.BeginTransaction();
+            var managerResult = new ManagerResult<OrderReservation>();
+            try
+            {
+                var order = await _context.OrderReservation.FindAsync(id);
+                if(order == null)
+                {
+                    managerResult.Success = false;
+                    managerResult.Message = "Order not found";
+                    return managerResult;
+                }
+
+                order.status = updateOrderDTO.status;
+                if(order.status == OrderStates.Canceled || order.status ==OrderStates.Finished)
+                {
+                    var resVehicleUpdate = await updateVehicleAysnc(order.VehicleId, VehicleStates.Open);
+                    if (!resVehicleUpdate)
+                    {
+                        await transaction.RollbackAsync();
+                        managerResult.Success = false;
+                        managerResult.Message = "An error has occurred";
+                        return managerResult;
+
+                    }
+                }
+
+                _context.Entry(order).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
+                managerResult.Success = true;
+                await transaction.CommitAsync();    
+                return managerResult;
+
+            }catch(Exception e)
+            {
+
+                managerResult.Success = false;
+                managerResult.Message = e.Message;
+                await transaction.RollbackAsync(); 
+                return managerResult;
+            }
+
+        }
+
+
+        private async Task<bool> updateVehicleAysnc(int idVehicle,int status)
+        {
+            try
+            {
+
+                var vehicle= await _context.Vehicle.FindAsync(idVehicle);   
+                if(vehicle == null)
+                {
+                    return false;
+                }
+                vehicle.state = status;
+                _context.Entry(vehicle).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
+
+
+                return true;
+
+            }catch(Exception e)
+            {
+                return false;
+
+            }
+        }
     }
 }

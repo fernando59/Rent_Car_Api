@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using Rent_Car_Api.DTOs.Auth;
+using Rent_Car_Api.Managers;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net;
 using System.Security.Claims;
@@ -43,6 +44,7 @@ namespace Rent_Car_Api.Controllers
         [Route("login")]
         public async Task<IActionResult> Login(LoginDTO loginDTO)
         {
+
             var user = await _userManager.FindByEmailAsync(loginDTO.Email);
             if (user != null && await _userManager.CheckPasswordAsync(user, loginDTO.Password))
             {
@@ -77,39 +79,54 @@ namespace Rent_Car_Api.Controllers
         [Route("register")]
         public async Task<IActionResult> Register(RegisterDTO model)
         {
-            var userExists = await _userManager.FindByNameAsync(model.Username);
-            if (userExists != null)
-                return StatusCode(StatusCodes.Status500InternalServerError, new  { Status = "Error", Message = "User already exists!" });
-
-            IdentityUser user = new()
+            var managerResult = new ManagerResult<string>();
+            try
             {
-                Email = model.Email,
-                SecurityStamp = Guid.NewGuid().ToString(),
-                UserName = model.Username
-            };
-            var result = await _userManager.CreateAsync(user, model.Password);
-            if (!result.Succeeded)
-            {
-                string message = "";
-                foreach (var item in result.Errors)
+                var userExists = await _userManager.FindByEmailAsync(model.Email);
+                if (userExists != null)
                 {
-                    message += $" {item.Description}";
+                    managerResult.Success = false;
+                    managerResult.Message = "User already exist!";
+                    return BadRequest(managerResult);
                 }
-                return StatusCode(StatusCodes.Status500InternalServerError, new  { Status = "Error", Message = "User creation failed! Please check user details and try again.",ErrorsList=message });
-            }
+
+                IdentityUser user = new()
+                {
+                    Email = model.Email,
+                    SecurityStamp = Guid.NewGuid().ToString(),
+                    UserName = model.Email
+                };
+                var result = await _userManager.CreateAsync(user, model.Password);
+                if (!result.Succeeded)
+                {
+                    string message = "";
+                    foreach (var item in result.Errors)
+                    {
+                        message += $" {item.Description}";
+                    }
+                    return StatusCode(StatusCodes.Status500InternalServerError, new { Status = "Error", Message = "User creation failed! Please check user details and try again.", ErrorsList = message });
+                }
 
 
 
-            //Add Rol Client
-             if (await _roleManager.RoleExistsAsync(UserRols.Client))
+                //Add Rol Client
+                if (await _roleManager.RoleExistsAsync(UserRols.Client))
                     await _userManager.AddToRoleAsync(user, UserRols.Client);
 
 
+                managerResult.Message = "User Register Successfully";
+                return Ok(managerResult);
+            }
+            catch (Exception e)
+            {
+                managerResult.Success = false;
+                managerResult.Message = e.Message;
+                return BadRequest(managerResult);
+            }
 
-            return Ok(new  { Status = "Success", Message = "User created successfully!" });
         }
-       
-        
+
+
         [HttpPost]
         [Route("register-admin")]
         [Authorize(Roles = UserRols.Admin)]
@@ -120,7 +137,7 @@ namespace Rent_Car_Api.Controllers
 
                 var userExists = await _userManager.FindByEmailAsync(model.Email);
                 if (userExists != null)
-                    return StatusCode(StatusCodes.Status500InternalServerError, new  { Status = "Error", Message = "Email already exists!" });
+                    return StatusCode(StatusCodes.Status500InternalServerError, new { Status = "Error", Message = "Email already exists!" });
 
                 IdentityUser user = new()
                 {
@@ -137,15 +154,16 @@ namespace Rent_Car_Api.Controllers
                     {
                         message += $" {item.Description}";
                     }
-                    return StatusCode(StatusCodes.Status500InternalServerError, new  { Status = "Error", Message = "User creation failed! Please check user details and try again.",ErrorsList=message });
+                    return StatusCode(StatusCodes.Status500InternalServerError, new { Status = "Error", Message = "User creation failed! Please check user details and try again.", ErrorsList = message });
                 }
 
                 if (await _roleManager.RoleExistsAsync(UserRols.Admin))
                     await _userManager.AddToRoleAsync(user, UserRols.Admin);
-                
-            
+
+
                 return Ok(new { Status = "Success", Message = "User created successfully!" });
-            }catch(Exception e)
+            }
+            catch (Exception e)
             {
                 return BadRequest();
             }
@@ -160,11 +178,11 @@ namespace Rent_Car_Api.Controllers
             var token = new JwtSecurityToken(
                 //issuer: _configuration["JWT:ValidIssuer"],
                 //audience: _configuration["JWT:ValidAudience"],
-                issuer:null,
-                audience:null,
+                issuer: null,
+                audience: null,
                 expires: DateTime.Now.AddHours(12),
                 claims: authClaims,
-                signingCredentials:credentials
+                signingCredentials: credentials
                 );
 
             return token;
@@ -174,5 +192,5 @@ namespace Rent_Car_Api.Controllers
     }
 }
 
-    
+
 
