@@ -3,16 +3,20 @@ using Rent_Car_Api.DTOs.Vehicle;
 using EFDataAccess.Models;
 using Microsoft.EntityFrameworkCore;
 using EFDataAccess.ClassesAux;
+using Rent_Car_Api.Managers.PhotoM;
+using Rent_Car_Api.DTOs.Image;
 
 namespace Rent_Car_Api.Managers.VehicleM
 {
     public class VehicleManager : IVehicleManager
     {
         private readonly ApplicationDbContext _context;
+        private readonly IPhotoManager _photoManager;
 
-        public VehicleManager(ApplicationDbContext context)
+        public VehicleManager(ApplicationDbContext context,IPhotoManager photoManager)
         {
             _context = context;
+            _photoManager = photoManager;
         }
         public async Task<ManagerResult<Vehicle>> GetAsync()
         {
@@ -30,6 +34,7 @@ namespace Rent_Car_Api.Managers.VehicleM
         }
         public async Task<ManagerResult<Vehicle>> AddAsync(CreateVehicleDTO createVehicleDTO)
         {
+            var transaction = _context.Database.BeginTransaction();
             var managerResult = new ManagerResult<Vehicle>();
             try
             {
@@ -40,6 +45,7 @@ namespace Rent_Car_Api.Managers.VehicleM
                     plate = createVehicleDTO.plate.ToUpper(),
                     price = createVehicleDTO.price,
                     year = createVehicleDTO.year,
+                    description= createVehicleDTO.description,
                     ModelVehicleId = createVehicleDTO.modelVehicleId,
                     TypeVehicleId = createVehicleDTO.typeVehicleId,
                     BrandVehicleId = createVehicleDTO.brandVehicleId
@@ -49,6 +55,12 @@ namespace Rent_Car_Api.Managers.VehicleM
                 await _context.Vehicle.AddAsync(vehicle);
                 await _context.SaveChangesAsync();
 
+                CreateImageDTO createImageDTO = new CreateImageDTO { fileImage = createVehicleDTO.imagePath, vehicleId = vehicle.Id.ToString() };
+                await _photoManager.AddAsync(createImageDTO);
+                await transaction.CommitAsync();
+
+
+
                 managerResult.Success = true;
                 managerResult.Message = "Successfully Add";
 
@@ -56,6 +68,7 @@ namespace Rent_Car_Api.Managers.VehicleM
             }
             catch (Exception e)
             {
+                await transaction.RollbackAsync();
                 managerResult.Success = false;
                 managerResult.Message = e.Message;
                 return managerResult;
@@ -102,6 +115,7 @@ namespace Rent_Car_Api.Managers.VehicleM
                 vehicle.plate = updateVehicleDTO.plate.ToUpper();
                 vehicle.year = updateVehicleDTO.year;
                 vehicle.capacity = updateVehicleDTO.capacity;
+                vehicle.description= updateVehicleDTO.description;
                 vehicle.hasAir = updateVehicleDTO.hasAir;
                 vehicle.BrandVehicleId = updateVehicleDTO.brandVehicleId;
                 vehicle.ModelVehicleId = updateVehicleDTO.modelVehicleId;
@@ -149,6 +163,7 @@ namespace Rent_Car_Api.Managers.VehicleM
                 .Include(s => s.ModelVehicle)
                 .Include(s => s.TypeVehicle)
                 .Include(s => s.BrandVehicle)
+                .Include(i => i.PhotosVehicles)
                 .ToListAsync();
 
             managerResult.Data = vehicles;

@@ -24,6 +24,7 @@ namespace Rent_Car_Api.Managers.OrderM
                 .Include("Vehicle.ModelVehicle")
                 .Include("Vehicle.TypeVehicle")
                 .Include(i=>i.User)
+                .OrderByDescending(i=>i.Id)
                 .ToListAsync();
             managerResult.Data = orders;
             return managerResult;
@@ -117,6 +118,7 @@ namespace Rent_Car_Api.Managers.OrderM
                 .Include("Vehicle.ModelVehicle")
                 .Include("Vehicle.TypeVehicle")
                 .Include(i => i.User)
+                .OrderByDescending(i=>i.Id)
                 .ToListAsync();
             managerResult.Data = orders;
             return managerResult;

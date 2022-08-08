@@ -1,5 +1,7 @@
 ﻿using EFDataAccess;
+using EFDataAccess.ClassesAux;
 using EFDataAccess.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -65,9 +67,9 @@ namespace Rent_Car_Api.Controllers
         }
 
         [HttpPost]
-        // [Authorize(Roles = UserRols.Admin)]
+        [Authorize(Roles = UserRols.Admin)]
 
-        public async Task<IActionResult> CreateVehicle(CreateVehicleDTO createVehicleDTO)
+        public async Task<IActionResult> CreateVehicle([FromForm]  CreateVehicleDTO createVehicleDTO)
         {
             ManagerResult<Vehicle> managerResult = await _vehicleManager.AddAsync(createVehicleDTO);
 
@@ -79,7 +81,7 @@ namespace Rent_Car_Api.Controllers
             return Ok(managerResult);
         }
         [HttpPut("{id}")]
-        // [Authorize(Roles = UserRols.Admin)]
+        [Authorize(Roles = UserRols.Admin)]
 
         public async Task<IActionResult> UpdateVehicle(int id,UpdateVehicleDTO updateVehicleDTO)
         {
@@ -95,7 +97,7 @@ namespace Rent_Car_Api.Controllers
 
 
         [HttpDelete("{id}")]
-        // [Authorize(Roles = UserRols.Admin)]
+        [Authorize(Roles = UserRols.Admin)]
 
         public async Task<IActionResult> DeleteVehicle(int id)
         {
