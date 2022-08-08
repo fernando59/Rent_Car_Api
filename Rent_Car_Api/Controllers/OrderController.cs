@@ -45,8 +45,7 @@ namespace Rent_Car_Api.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = $"{UserRols.Admin},${UserRols.Client}")]
-
+        [Authorize(Roles = "Client,Admin")]
         public async Task<IActionResult> CreateOrder(CreateOrderDTO createrOrderDTO)
         {
             string userId = getUser();

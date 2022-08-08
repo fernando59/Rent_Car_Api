@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Rent_Car_Api.DTOs.Auth;
 using Rent_Car_Api.Managers;
@@ -126,8 +127,19 @@ namespace Rent_Car_Api.Controllers
 
         }
 
+        [HttpGet]
+        [Route("getUsers")]
+        [Authorize(Roles = UserRols.Admin)]
+        public async Task<IActionResult> GetUsers()
+        {
+            var users =await _context.Users.Select(i=>new {i.Email,i.Id,i.UserName}).ToListAsync();
 
-        [HttpPost]
+            return Ok(new { data = users });
+
+        }
+
+
+            [HttpPost]
         [Route("register-admin")]
         [Authorize(Roles = UserRols.Admin)]
         public async Task<IActionResult> RegisterAdmin(RegisterDTO model)
