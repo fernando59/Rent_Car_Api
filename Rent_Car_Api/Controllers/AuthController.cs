@@ -139,7 +139,7 @@ namespace Rent_Car_Api.Controllers
         }
 
 
-            [HttpPost]
+        [HttpPost]
         [Route("register-admin")]
         [Authorize(Roles = UserRols.Admin)]
         public async Task<IActionResult> RegisterAdmin(RegisterDTO model)

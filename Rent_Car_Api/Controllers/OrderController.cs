@@ -45,7 +45,7 @@ namespace Rent_Car_Api.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Client,Admin")]
+        [Authorize(Roles = UserRols.Client)]
         public async Task<IActionResult> CreateOrder(CreateOrderDTO createrOrderDTO)
         {
             string userId = getUser();
@@ -64,6 +64,21 @@ namespace Rent_Car_Api.Controllers
             }
             return Ok(managerResult);
         }
+        [HttpPost("CreateOrderAdmin")]
+        [Authorize(Roles = UserRols.Admin)]
+        public async Task<IActionResult> CreateOrderAdmin(CreateOrderAdminDTO createOrderAdminDTO)
+        {
+            ManagerResult<OrderReservation> managerResult = new ManagerResult<OrderReservation>();
+            managerResult = await _orderManager.AddOrderAdminAsync(createOrderAdminDTO);
+
+            if (!managerResult.Success)
+            {
+                return BadRequest(managerResult);
+            }
+            return Ok(managerResult);
+        }
+
+
         [HttpPut("{id}")]
         [Authorize(Roles = $"{UserRols.Admin},${UserRols.Client}")]
 

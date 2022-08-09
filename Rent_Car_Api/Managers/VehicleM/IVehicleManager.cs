@@ -7,6 +7,7 @@ public interface IVehicleManager
 {
 
     Task<ManagerResult<Vehicle>> AddAsync(CreateVehicleDTO createVehicleDTO);
+    Task<ManagerResult<Vehicle>> GetAsyncOnlyOpen();
     Task<ManagerResult<Vehicle>> GetAsync();
     Task<ManagerResult<decimal>> GetPrices();
     Task<ManagerResult<Vehicle>> GetAsyncById(int id);

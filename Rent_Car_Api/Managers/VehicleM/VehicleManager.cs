@@ -32,6 +32,20 @@ namespace Rent_Car_Api.Managers.VehicleM
 
             return managerResult;
         }
+        public async Task<ManagerResult<Vehicle>> GetAsyncOnlyOpen()
+        {
+            var managerResult = new ManagerResult<Vehicle>();
+            var vehicles = await _context.Vehicle.Where(i => i.state == VehicleStates.Open)
+              .Include(i => i.ModelVehicle)
+              .Include(h => h.BrandVehicle)
+              .Include(t => t.TypeVehicle)
+              .Include(i => i.PhotosVehicles)
+              .ToListAsync();
+
+            managerResult.Data = vehicles;
+
+            return managerResult;
+        }
         public async Task<ManagerResult<Vehicle>> AddAsync(CreateVehicleDTO createVehicleDTO)
         {
             var transaction = _context.Database.BeginTransaction();

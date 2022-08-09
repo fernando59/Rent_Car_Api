@@ -28,6 +28,12 @@ namespace Rent_Car_Api.Controllers
             var vehicles = await _vehicleManager.GetAsync();
             return Ok(vehicles);
         }
+        [HttpGet("getOnlyOpen")]
+        public async Task<ActionResult> GetVehiclesOnlyOpen()
+        {
+            var vehicles = await _vehicleManager.GetAsyncOnlyOpen();
+            return Ok(vehicles);
+        }
 
         [HttpGet("{id}")]
         public async Task<ActionResult> GetVehicleById(int id)

@@ -33,6 +33,7 @@ namespace Rent_Car_Api.Managers.OrderM
 
         public async Task<ManagerResult<OrderReservation>> AddAsync(CreateOrderDTO createOrderDTO, string userId)
         {
+
             var transaction = _context.Database.BeginTransaction();
             var managerResult = new ManagerResult<OrderReservation>();
             try
@@ -193,6 +194,65 @@ namespace Rent_Car_Api.Managers.OrderM
                 return false;
 
             }
+        }
+
+        public async Task<ManagerResult<OrderReservation>> AddOrderAdminAsync(CreateOrderAdminDTO createOrderAdminDTO)
+        {
+
+            var transaction = _context.Database.BeginTransaction();
+            var managerResult = new ManagerResult<OrderReservation>();
+            try
+            {
+                var vehicle = await _context.Vehicle.Where(v => v.Id == createOrderAdminDTO.VehicleId && v.state == VehicleStates.Open).FirstOrDefaultAsync();
+                if (vehicle == null)
+                {
+                    managerResult.Success = false;
+                    managerResult.Message = "Vehicle not exist or is busy";
+                    return managerResult;
+                }
+
+                var responseUpdateVehicle = await UpdateVehicle(vehicle);
+                if (!responseUpdateVehicle)
+                {
+                    await transaction.RollbackAsync();
+                    managerResult.Success = false;
+                    managerResult.Message = "Vehicle is busy";
+                    return managerResult;
+                }
+
+
+                var days = (createOrderAdminDTO.endDate.Date - createOrderAdminDTO.startDate.Date).Days;
+                OrderReservation orderReservation = new OrderReservation
+                {
+                    startDate = createOrderAdminDTO.startDate,
+                    endDate = createOrderAdminDTO.endDate,
+                    price = vehicle.price,
+                    VehicleId = createOrderAdminDTO.VehicleId,
+                    UserId = createOrderAdminDTO.userId,
+                    days = days,
+                };
+
+                // Deberia de estar en repositorio
+                await _context.OrderReservation.AddAsync(orderReservation);
+                await _context.SaveChangesAsync();
+
+                await transaction.CommitAsync();
+
+                managerResult.Success = true;
+                managerResult.Message = "Successfully Add";
+
+                return managerResult;
+            }
+            catch (Exception e)
+            {
+
+                await transaction.RollbackAsync();
+                managerResult.Success = false;
+                managerResult.Message = e.Message;
+                return managerResult;
+
+            }
+
         }
     }
 }
