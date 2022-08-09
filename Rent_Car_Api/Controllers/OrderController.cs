@@ -28,6 +28,13 @@ namespace Rent_Car_Api.Controllers
             return Ok(orders);
         }
 
+        [HttpGet("GetOrdersByDay")]
+        public async Task<ActionResult> GetOrdersByDay()
+        {
+            var orders = await _orderManager.GetOrdersByDay();
+            return Ok(orders);
+        }
+
         [HttpGet("getOrdersByUser")]
         [Authorize(Roles = UserRols.Client)]
         public async Task<ActionResult> GetOrdersByClient()

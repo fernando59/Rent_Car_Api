@@ -32,6 +32,13 @@ namespace Rent_Car_Api.Managers.VehicleM
 
             return managerResult;
         }
+        public async Task<ManagerResult<int>> GetVehiclesCount()
+        {
+            var managerResult = new ManagerResult<int>();
+            var vehicles = await _context.Vehicle.Where(i => i.state != VehicleStates.Deleted).ToListAsync();
+            managerResult.DataOnly = vehicles.Count;
+            return managerResult;
+        }
         public async Task<ManagerResult<Vehicle>> GetAsyncOnlyOpen()
         {
             var managerResult = new ManagerResult<Vehicle>();

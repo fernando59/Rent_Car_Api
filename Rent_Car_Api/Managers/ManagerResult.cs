@@ -6,6 +6,7 @@
         public bool Success { get; set; } = true;
         public string Message { get; set; }
         public IList<T> Data { get; set; } 
+        public T? DataOnly { get; set; } 
         
     }
 }

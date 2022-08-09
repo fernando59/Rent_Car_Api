@@ -18,6 +18,7 @@ namespace EFDataAccess.Models
         [Column(TypeName = "money")]
         public decimal price{ get; set; }
         public string? description { get; set; } 
+        public DateTime createAt{ get; set; }  = DateTime.Now;
 
         public int state { get; set; } = VehicleStates.Open;
         public int year{ get; set; }    

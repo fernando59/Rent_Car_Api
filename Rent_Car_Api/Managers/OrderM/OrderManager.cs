@@ -254,5 +254,14 @@ namespace Rent_Car_Api.Managers.OrderM
             }
 
         }
+
+        public async Task<ManagerResult<int>> GetOrdersByDay()
+        {
+            var managerResult = new ManagerResult<int>();
+            var orders = await _context.OrderReservation.Where(i => i.status != 4).Where(i => i.createAt.Date == DateTime.Now.Date).ToListAsync();
+            managerResult.DataOnly = orders.Count;
+            return managerResult;
+        }
+
     }
 }
