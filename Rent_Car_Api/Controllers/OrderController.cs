@@ -1,8 +1,10 @@
-﻿using EFDataAccess.ClassesAux;
+﻿using EFDataAccess;
+using EFDataAccess.ClassesAux;
 using EFDataAccess.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Rent_Car_Api.DTOs.Order;
 using Rent_Car_Api.Managers;
 using Rent_Car_Api.Managers.OrderM;
@@ -15,10 +17,12 @@ namespace Rent_Car_Api.Controllers
     public class OrderController : ControllerBase
     {
         private readonly IOrderManager _orderManager;
+        private readonly ApplicationDbContext _context;
 
-        public OrderController(IOrderManager orderManager)
+        public OrderController(IOrderManager orderManager, ApplicationDbContext context)
         {
             _orderManager = orderManager;
+            _context = context;
         }
 
         [HttpGet]
@@ -26,6 +30,21 @@ namespace Rent_Car_Api.Controllers
         {
             var orders = await _orderManager.GetAsync();
             return Ok(orders);
+        }
+        [HttpGet("GetOrderChart")]
+        public async Task<ActionResult> GetOrdersChart()
+        {
+            //var orders = await _orderManager.GetAsyncChart();
+            var orders = await _context.OrderReservation
+                .Include(i => i.Vehicle)
+                .Include("Vehicle.BrandVehicle")
+                //.GroupBy(x => new {x.Vehicle.BrandVehicle.name,x.VehicleId})
+                //.GroupBy(x => x.VehicleId)
+                .GroupBy(x => x.Vehicle.BrandVehicle.name)
+                .Select(x => new { Vehicle =x.Key, count = x.Count() }).ToListAsync();
+                
+
+            return Ok(new { data = orders });
         }
 
         [HttpGet("GetOrdersByDay")]
