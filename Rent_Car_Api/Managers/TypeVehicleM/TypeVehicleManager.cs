@@ -65,7 +65,8 @@ namespace Rent_Car_Api.Managers.TypeVehicleM
             {
 
                 managerResult.Success = false;
-                managerResult.Message = e.Message;
+                managerResult.Message = "The Type Vehicle already has a vehicle assigned";
+                
                 return managerResult;
             }
         }

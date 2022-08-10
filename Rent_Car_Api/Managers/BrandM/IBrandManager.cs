@@ -8,5 +8,6 @@ namespace Rent_Car_Api.Managers.BrandM
         Task<ManagerResult<BrandVehicle>> GetAsync();
         Task<ManagerResult<BrandVehicle>> AddAsync(CreateBrandDTO createBrandDTO);
         Task<ManagerResult<BrandVehicle>> Updatesync(int id,CreateBrandDTO createBrandDTO);
+        Task<ManagerResult<BrandVehicle>> DeleteAsync(int id);
     }
 }

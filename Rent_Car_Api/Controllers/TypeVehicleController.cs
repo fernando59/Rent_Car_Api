@@ -1,5 +1,7 @@
 ﻿using EFDataAccess;
+using EFDataAccess.ClassesAux;
 using EFDataAccess.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Rent_Car_Api.DTOs.TypeVehicle;
@@ -28,7 +30,7 @@ namespace Rent_Car_Api.Controllers
         }
         [HttpPost]
 
-        //[Authorize(Roles = UserRols.Admin)]
+        [Authorize(Roles = UserRols.Admin)]
         public async Task<IActionResult> CreateTypeVehicle(CreateTypeVehicleDTO createTypeVehicleDTO)
         {
             ManagerResult<TypeVehicle> managerResult = await _typeVehicleManager.AddAsync(createTypeVehicleDTO);
@@ -42,7 +44,7 @@ namespace Rent_Car_Api.Controllers
         }
 
         [HttpPut("{id}")]
-        //[Authorize(Roles = UserRols.Admin)]
+        [Authorize(Roles = UserRols.Admin)]
         public async Task<IActionResult> UpdateTypeVehicle(int id, CreateTypeVehicleDTO createTypeVehicleDTO)
         {
             ManagerResult<TypeVehicle> managerResult = await _typeVehicleManager.UpdateAsync(id, createTypeVehicleDTO);
@@ -56,7 +58,7 @@ namespace Rent_Car_Api.Controllers
         }
 
         [HttpDelete("{id}")]
-        //[Authorize(Roles = UserRols.Admin)]
+        [Authorize(Roles = UserRols.Admin)]
         public async Task<IActionResult> DeleteTypeVehicle(int id)
         {
             ManagerResult<TypeVehicle> managerResult = await _typeVehicleManager.DeleteAsync(id);

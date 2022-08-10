@@ -40,6 +40,30 @@ namespace Rent_Car_Api.Managers.BrandM
             return managerResult;
         }
 
+        public async  Task<ManagerResult<BrandVehicle>> DeleteAsync(int id)
+        {
+            var managerResult = new ManagerResult<BrandVehicle>();
+            try { 
+                 var brand = await _context.BrandVehicle.Where(t => t.Id == id).FirstOrDefaultAsync();
+
+                if (brand == null)
+                {
+                    managerResult.Message = "Brand not found";
+                    managerResult.Success = false;
+                    return managerResult;
+                }
+                _context.BrandVehicle.Remove(brand);
+                await _context.SaveChangesAsync();
+                return managerResult;
+            }catch(Exception e)
+            {
+                managerResult.Success = false;
+                managerResult.Message = "The brand already has a vehicle assigned";
+                return managerResult;
+
+            }
+        }
+
         public async Task<ManagerResult<BrandVehicle>> GetAsync()
         {
             var managerResult = new ManagerResult<BrandVehicle>();

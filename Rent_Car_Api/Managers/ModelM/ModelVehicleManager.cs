@@ -64,7 +64,7 @@ namespace Rent_Car_Api.Managers.ModelM
             {
 
                 managerResult.Success = false;
-                managerResult.Message = e.Message;
+                managerResult.Message = "The model already has a vehicle assigned";
                 return managerResult;
             }
 

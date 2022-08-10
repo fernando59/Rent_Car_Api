@@ -15,14 +15,14 @@ namespace Rent_Car_Api.Controllers
     [ApiController]
     public class BrandVehicleController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
         private readonly IBrandManager _brandManager;
 
-        public BrandVehicleController(ApplicationDbContext context, IBrandManager brandManager)
+        public BrandVehicleController(IBrandManager brandManager)
         {
-            _context = context;
             _brandManager = brandManager;
         }
+
+
         [HttpGet]
         public async Task<ActionResult> GetModelVehicles()
         {
@@ -63,14 +63,13 @@ namespace Rent_Car_Api.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteBrand(int id)
         {
-            var brand = await _context.BrandVehicle.Where(t => t.Id == id).FirstOrDefaultAsync();
 
-            if (brand == null)  return NotFound(new { success = false, Message = "Brand not found" }); 
-
-            _context.BrandVehicle.Remove(brand);
-            await _context.SaveChangesAsync();
-            return Ok(new { success = true, message = "Delete successfully" });
-
+            ManagerResult<BrandVehicle> managerResult = await _brandManager.DeleteAsync(id);
+            if (!managerResult.Success)
+            {
+                return BadRequest(managerResult);
+            }
+            return Ok(managerResult);
         }
 
     }

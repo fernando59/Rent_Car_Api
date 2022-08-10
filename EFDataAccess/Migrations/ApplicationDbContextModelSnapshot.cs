@@ -165,13 +165,13 @@ namespace EFDataAccess.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<int>("BrandVehicleId")
+                    b.Property<int?>("BrandVehicleId")
                         .HasColumnType("int");
 
-                    b.Property<int>("ModelVehicleId")
+                    b.Property<int?>("ModelVehicleId")
                         .HasColumnType("int");
 
-                    b.Property<int>("TypeVehicleId")
+                    b.Property<int?>("TypeVehicleId")
                         .HasColumnType("int");
 
                     b.Property<int>("capacity")
@@ -241,14 +241,14 @@ namespace EFDataAccess.Migrations
                         new
                         {
                             Id = "832820ac-1b08-444f-a181-cb53552ec970",
-                            ConcurrencyStamp = "1f25deba-4185-43e7-bc8c-85e1f2529205",
+                            ConcurrencyStamp = "eec8d20e-79b0-4a5b-9589-ac3a9999be90",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
                             Id = "ade430d8-7c00-4fb4-96e7-b4531617964e",
-                            ConcurrencyStamp = "4e73b8f8-1f87-4a03-a2dd-b8fc6d105c6e",
+                            ConcurrencyStamp = "94e57014-8570-4b03-8bed-1a1b6eac6bfd",
                             Name = "Client",
                             NormalizedName = "CLIENT"
                         });
@@ -348,15 +348,15 @@ namespace EFDataAccess.Migrations
                         {
                             Id = "bfd48176-a1c3-4b29-9c74-72b2d8bb688d",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "a1958c38-35dd-4fdf-b928-1d115021bf18",
+                            ConcurrencyStamp = "123b0efb-86c2-40a9-b142-c34fff634e15",
                             Email = "admin@gmail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@GMAIL.COM",
                             NormalizedUserName = "ADMIN",
-                            PasswordHash = "AQAAAAEAACcQAAAAEGkd70vNxovnHqFM0ACDnQDzvsBREemPNlkOUrUJcZe0Jxuq5Q54ORvP5ednTNegFA==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEFgmFQXn/GhTY/kSUeToBYE7JhNg2hjlTZ5fLy01X2lOLv2ASB+Gpp4zrETAG++mGw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "382d255a-8ca9-4ab8-87e0-59173389924a",
+                            SecurityStamp = "2c38ecd9-c5ca-4721-b14f-8f56499dec8d",
                             TwoFactorEnabled = false,
                             UserName = "admin"
                         });
@@ -491,21 +491,15 @@ namespace EFDataAccess.Migrations
                 {
                     b.HasOne("EFDataAccess.Models.BrandVehicle", "BrandVehicle")
                         .WithMany()
-                        .HasForeignKey("BrandVehicleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("BrandVehicleId");
 
                     b.HasOne("EFDataAccess.Models.ModelVehicle", "ModelVehicle")
                         .WithMany()
-                        .HasForeignKey("ModelVehicleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ModelVehicleId");
 
                     b.HasOne("EFDataAccess.Models.TypeVehicle", "TypeVehicle")
                         .WithMany()
-                        .HasForeignKey("TypeVehicleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("TypeVehicleId");
 
                     b.Navigation("BrandVehicle");
 
