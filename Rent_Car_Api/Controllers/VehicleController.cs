@@ -95,7 +95,7 @@ namespace Rent_Car_Api.Controllers
         [HttpPut("{id}")]
         [Authorize(Roles = UserRols.Admin)]
 
-        public async Task<IActionResult> UpdateVehicle(int id,UpdateVehicleDTO updateVehicleDTO)
+        public async Task<IActionResult> UpdateVehicle(int id,[FromForm] UpdateVehicleDTO updateVehicleDTO)
         {
             ManagerResult<Vehicle> managerResult = await _vehicleManager.UpdateAsync(id,updateVehicleDTO);
 

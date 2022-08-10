@@ -119,6 +119,7 @@ namespace Rent_Car_Api.Managers.VehicleM
 
         public async Task<ManagerResult<Vehicle>> UpdateAsync(int id, UpdateVehicleDTO updateVehicleDTO)
         {
+            var transaction = _context.Database.BeginTransaction();
             var managerResult = new ManagerResult<Vehicle>();
             try
             {
@@ -144,6 +145,20 @@ namespace Rent_Car_Api.Managers.VehicleM
 
                 _context.Entry(vehicle).State = EntityState.Modified;
                 await _context.SaveChangesAsync();
+                var image = await _context.PhotosVehicles.Where(i => i.VehicleId == vehicle.Id).FirstOrDefaultAsync();
+
+
+                if (image != null)
+                {
+                    _context.PhotosVehicles.Remove(image);
+                    await _context.SaveChangesAsync();
+                }
+
+
+
+                CreateImageDTO createImageDTO = new CreateImageDTO { fileImage = updateVehicleDTO.imagePath, vehicleId = vehicle.Id.ToString() };
+                await _photoManager.AddAsync(createImageDTO);
+                await transaction.CommitAsync();
 
                 managerResult.Message = "Successfully Update";
 
@@ -151,6 +166,7 @@ namespace Rent_Car_Api.Managers.VehicleM
             }
             catch (Exception e)
             {
+                await transaction.RollbackAsync();
                 managerResult.Success = false;
                 managerResult.Message = e.Message;
                 return managerResult;

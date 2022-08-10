@@ -29,27 +29,16 @@ namespace Rent_Car_Api.Managers.OrderM
             managerResult.Data = orders;
             return managerResult;
         }
-        public async Task<ManagerResult<List<int>>> GetAsyncChart()
+        public async Task<ManagerResult<List<OrderChart>>> GetAsyncChart()
         {
 
-            var managerResult = new ManagerResult<List<int>>();
-            //var orders = await _context.OrderReservation.Where(i => i.status != 4)
-            //    .Include(i => i.Vehicle)
-            //     .Include("Vehicle.BrandVehicle")
-            //     .GroupBy(s=>s.Vehicle.BrandVehicle)
-            //     .Select(g=>new {count = g.Key.Id,count =g.Count()})
-            //     .OrderByDescending(i => i.Id)
-            //     .ToListAsync();
-            var orders = await  (from o in _context.OrderReservation
-                         join v in _context.Vehicle
-                             on o.VehicleId equals v.Id
-                         group new { o, v } by new { o, v } into g
-                         select new List<int>
-                         {
-                            g.Count()
-                             //g.Key.v.plate
-                         }).ToListAsync();
-            managerResult.Data = orders;
+            var managerResult = new ManagerResult<List<OrderChart>>();
+                var orders = await _context.OrderReservation
+                  .Include(i => i.Vehicle)
+                  .Include("Vehicle.BrandVehicle")
+                  .GroupBy(x => x.Vehicle.BrandVehicle.name)
+                  .Select(x => new OrderChart{ Vehicle = x.Key, count = x.Count() }).ToListAsync();
+            managerResult.Data = (IList<List<OrderChart>>)orders;
 
             return managerResult;
         }

@@ -34,15 +34,14 @@ namespace Rent_Car_Api.Controllers
         [HttpGet("GetOrderChart")]
         public async Task<ActionResult> GetOrdersChart()
         {
-            //var orders = await _orderManager.GetAsyncChart();
+           // var orders = await _orderManager.GetAsyncChart();
+            //  return Ok(orders);
             var orders = await _context.OrderReservation
                 .Include(i => i.Vehicle)
                 .Include("Vehicle.BrandVehicle")
-                //.GroupBy(x => new {x.Vehicle.BrandVehicle.name,x.VehicleId})
-                //.GroupBy(x => x.VehicleId)
                 .GroupBy(x => x.Vehicle.BrandVehicle.name)
-                .Select(x => new { Vehicle =x.Key, count = x.Count() }).ToListAsync();
-                
+                .Select(x => new OrderChart { Vehicle = x.Key, count = x.Count() }).ToListAsync();
+
 
             return Ok(new { data = orders });
         }

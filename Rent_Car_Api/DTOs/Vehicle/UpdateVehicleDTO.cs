@@ -2,6 +2,7 @@
 {
     public class UpdateVehicleDTO
     {
+        public IFormFile? imagePath { get; set; }
         public int capacity { get; set; }
         public int year { get; set; }
         public string plate { get; set; }
