@@ -11,7 +11,7 @@ namespace Rent_Car_Api.Managers.BrandM
 
         public BrandManager(ApplicationDbContext context)
         {
-            this._context = context;
+            _context = context;
         }
 
         public async Task<ManagerResult<BrandVehicle>> AddAsync(CreateBrandDTO createBrandDTO)
