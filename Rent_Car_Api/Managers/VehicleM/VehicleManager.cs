@@ -148,7 +148,7 @@ namespace Rent_Car_Api.Managers.VehicleM
                 var image = await _context.PhotosVehicles.Where(i => i.VehicleId == vehicle.Id).FirstOrDefaultAsync();
 
 
-                if (image != null)
+                if (image != null && updateVehicleDTO.imagePath !=null)
                 {
                     _context.PhotosVehicles.Remove(image);
                     await _context.SaveChangesAsync();
@@ -156,8 +156,12 @@ namespace Rent_Car_Api.Managers.VehicleM
 
 
 
-                CreateImageDTO createImageDTO = new CreateImageDTO { fileImage = updateVehicleDTO.imagePath, vehicleId = vehicle.Id.ToString() };
-                await _photoManager.AddAsync(createImageDTO);
+
+                if(updateVehicleDTO.imagePath != null)
+                {
+                    CreateImageDTO createImageDTO = new CreateImageDTO { fileImage = updateVehicleDTO.imagePath, vehicleId = vehicle.Id.ToString() };
+                    await _photoManager.AddAsync(createImageDTO);
+                }
                 await transaction.CommitAsync();
 
                 managerResult.Message = "Successfully Update";

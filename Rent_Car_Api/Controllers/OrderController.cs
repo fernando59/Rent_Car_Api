@@ -45,6 +45,17 @@ namespace Rent_Car_Api.Controllers
 
             return Ok(new { data = orders });
         }
+        [HttpGet("GetOrdersTotalSales")]
+        public async Task<ActionResult> GetOrdersTotalSales()
+        {
+            //var orders = await _context.OrderReservation.Where(s => s.status == OrderStates.Finished).Sum(s => s.days * s.price);
+            var orders =  (from o in  _context.OrderReservation
+                          where o.status == OrderStates.Finished
+                          select o).Sum(e => e.days*e.price);
+
+
+            return Ok(new { data = orders });
+        }
 
         [HttpGet("GetOrdersByDay")]
         public async Task<ActionResult> GetOrdersByDay()
