@@ -114,8 +114,21 @@ namespace Rent_Car_Api.Controllers
                 if (await _roleManager.RoleExistsAsync(UserRols.Client))
                     await _userManager.AddToRoleAsync(user, UserRols.Client);
 
+                var authClaims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.Email , user.Email),
+                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                    new Claim("uid",user.Id),
+                };
+
+                authClaims.Add(new Claim(ClaimTypes.Role, UserRols.Client));
+
+                var token = GetToken(authClaims);
+
 
                 managerResult.Message = "User Register Successfully";
+                managerResult.DataOnly = new JwtSecurityTokenHandler().WriteToken(token);
+
                 return Ok(managerResult);
             }
             catch (Exception e)
